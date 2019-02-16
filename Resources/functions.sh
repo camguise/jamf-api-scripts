@@ -202,7 +202,7 @@ function createConfig {
 
 function testConfig {
 	if [[ -z "${CONFIG_FILE}" ]]; then
-		echo "Error: Error: You must specify a config file (-c)" >&2
+		echo "Error: You must specify a config file (-c)" >&2
 		exit 1
 	fi
 	
