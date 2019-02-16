@@ -170,6 +170,13 @@ function createConfig {
 	local jssadminuser=""
 	local jssadminpwd=""
 	
+	if [[ -z "${OUTPUT_FILE}" ]]; then
+		echo "Error: You must specify an output file (-o)" >&2
+		echo ""
+		helpText
+		exit 1
+	fi
+	
 	if [[ -f "${OUTPUT_FILE}" ]]; then
 		echo "The output file you have specified already exists." >&2
 		echo "${OUTPUT_FILE}"
@@ -197,7 +204,7 @@ function createConfig {
 
 function loadConfig {
 	if [[ -z "${OUTPUT_FILE}" && -z "${CONFIG_FILE}" ]]; then
-		echo "Error: You must specify either a output file (-o) or config file (-c)" >&2
+		echo "Error: You must specify either an output file (-o) or config file (-c)" >&2
 		echo ""
 		helpText
 		exit 1
