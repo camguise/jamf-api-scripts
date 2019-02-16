@@ -165,31 +165,11 @@ function httpPut {
 	fi
 }
 
-function loadConfig {
-
+function createConfig {
 	local jssaddress=""
 	local jssadminuser=""
 	local jssadminpwd=""
 	
-	if [[ -z "${OUTPUT_FILE}" && -z "${CONFIG_FILE}" ]]; then
-		echo "Error: You must specify either a output file (-o) or config file (-c)" >&2
-		echo ""
-		helpText
-		exit 1
-	fi
-
-	if [[ ! -z "${CONFIG_FILE}" && ! -z "${OUTPUT_FILE}" ]]; then
-		echo "Error: You can't specify both a config file and an output file" >&2
-		echo ""
-		helpText
-		exit 1
-	fi
-
-	if [[ ! -z "${CONFIG_FILE}" && ! -f "${CONFIG_FILE}" ]]; then
-		echo "Error: No config file found at ${CONFIG_FILE}" >&2
-		exit 1
-	fi
-
 	if [[ -f "${OUTPUT_FILE}" ]]; then
 		echo "The output file you have specified already exists." >&2
 		echo "${OUTPUT_FILE}"
@@ -212,6 +192,31 @@ function loadConfig {
 		verbose "--------------------------------------------"
 		$VERBOSE && cat "${CONFIG_FILE}"
 		verbose "--------------------------------------------"
+	fi
+}
+
+function loadConfig {
+	if [[ -z "${OUTPUT_FILE}" && -z "${CONFIG_FILE}" ]]; then
+		echo "Error: You must specify either a output file (-o) or config file (-c)" >&2
+		echo ""
+		helpText
+		exit 1
+	fi
+
+	if [[ ! -z "${CONFIG_FILE}" && ! -z "${OUTPUT_FILE}" ]]; then
+		echo "Error: You can't specify both a config file and an output file" >&2
+		echo ""
+		helpText
+		exit 1
+	fi
+
+	if [[ ! -z "${CONFIG_FILE}" && ! -f "${CONFIG_FILE}" ]]; then
+		echo "Error: No config file found at ${CONFIG_FILE}" >&2
+		exit 1
+	fi
+
+	if [[ ! -z "${OUTPUT_FILE}" ]]; then
+		createConfig
 	fi
 
 	verbose "Loading config ${CONFIG_FILE}..."
