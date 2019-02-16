@@ -45,4 +45,9 @@ done
 
 ## MAIN SCRIPT ##
 
+oldVerbose=$VERBOSE # Record previous value of VERBOSE flag
+VERBOSE=true # Set VERBOSE to true so config file is output from this script
+
 createConfig
+
+VERBOSE=oldVerbose # Restore the value of VERBOSE

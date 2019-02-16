@@ -195,10 +195,8 @@ function createConfig {
 		echo "JAMF_AUTH_KEY='${jsskey}' # echo -n 'user:password' | base64" >> "${OUTPUT_FILE}"
 		echo "JAMF_URL='${jssaddress}' # Including port if not using 443" >> "${OUTPUT_FILE}"
 		CONFIG_FILE="${OUTPUT_FILE}"
-		verbose "Config file written:"
-		verbose "--------------------------------------------"
-		$VERBOSE && cat "${CONFIG_FILE}"
-		verbose "--------------------------------------------"
+		verbose "Config file has been written. You can now use this file in other scripts."
+		verbose " -c ${CONFIG_FILE}"
 	fi
 }
 
