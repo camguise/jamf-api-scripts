@@ -200,6 +200,35 @@ function createConfig {
 	fi
 }
 
+function testConfig {
+	if [[ -z "${CONFIG_FILE}" ]]; then
+		echo "Error: Error: You must specify a config file (-c)" >&2
+		exit 1
+	fi
+	
+	if [[ ! -f "${CONFIG_FILE}" ]]; then
+		echo "Error: No config file found at ${CONFIG_FILE}" >&2
+		exit 1
+	fi
+	
+	source "${CONFIG_FILE}"
+
+	for item in ${CONFIG_REQUIRED_ITEMS[@]}; do
+		if [[ -z "${!item}" ]]; then
+			echo "Error: You must specify ${item} in the config file"
+			exit 1
+		fi
+	done
+	
+	verbose "Config file is valid"
+}
+
+function testServerConnection {
+	httpGet "/JSSResource/buildings" > /dev/null
+	
+	echo "Connection to server ${JSS_URL} was successful"
+}
+
 function loadConfig {
 	if [[ -z "${OUTPUT_FILE}" && -z "${CONFIG_FILE}" ]]; then
 		echo "Error: You must specify either an output file (-o) or config file (-c)" >&2
@@ -215,22 +244,11 @@ function loadConfig {
 		exit 1
 	fi
 
-	if [[ ! -z "${CONFIG_FILE}" && ! -f "${CONFIG_FILE}" ]]; then
-		echo "Error: No config file found at ${CONFIG_FILE}" >&2
-		exit 1
-	fi
-
 	if [[ ! -z "${OUTPUT_FILE}" ]]; then
 		createConfig
 	fi
 
 	verbose "Loading config ${CONFIG_FILE}..."
-	source "${CONFIG_FILE}"
 	
-	for item in ${CONFIG_REQUIRED_ITEMS[@]}; do
-		if [[ -z "${!item}" ]]; then
-			echo "Error: You must specify ${item} in the config file"
-			exit 1
-		fi
-	done
+	testConfig
 }
