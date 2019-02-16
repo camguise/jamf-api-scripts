@@ -32,39 +32,37 @@ options:
     -h                show this help text
     -o [file path]    output file for config. Can't be used with -c
     -c [file path]    input an existing config file. Can't be used with -o
-    -v                verbose output"
-    #-n                dry run in verbose mode"
+    -v                verbose output
+    -n                dry run without performing any operations on the server"
 }
 
-while getopts ":o:c:vh" opt; do
- case $opt in
-   o)
-		OUTPUT_FILE=$(realpath "$OPTARG")
-     	;;
-   c)
-		CONFIG_FILE=$(realpath "$OPTARG")
-     	;;
-   v)
-		VERBOSE=true
-     	;;
-   h)
-		helpText
-		exit 0
-     	;;
-# Not yet implemented
-#   n)
-#		VERBOSE=1
-#		DRY_RUN=true
-#    	;;
-   \?)
-		echo "Invalid option: -$OPTARG" >&2
-		exit 1
-     	;;
-   :)
-     	echo "Option -$OPTARG requires an argument." >&2
-     	exit 1
-     	;;
- esac
+while getopts ":o:c:vnh" opt; do
+	case $opt in
+		o)
+			OUTPUT_FILE=$(realpath "$OPTARG")
+			;;
+		c)
+			CONFIG_FILE=$(realpath "$OPTARG")
+			;;
+		v)
+			VERBOSE=true
+			;;
+		h)
+			helpText
+			exit 0
+			;;
+		n)
+			DRY_RUN=true
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+		:)
+			echo "Option -$OPTARG requires an argument." >&2
+			exit 1
+			;;
+	esac
 done
 
 ## MAIN SCRIPT ##
@@ -105,5 +103,6 @@ xmlData="<mobile_device_application>
 for i in ${appIDs[@]}; do
 	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}")
 	printf "Modifying App ${appName}... "
-	httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
+	$DRY_RUN && echo "[Dry Run]"
+	! $DRY_RUN && httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
 done
