@@ -9,7 +9,6 @@ realpath() {
 
 # Echo out the text only if the verbose flag is set
 verbose () {
-	#if [[ "$VERBOSE" -eq 1 ]]; then
 	if $VERBOSE; then
         echo "$@"
     fi
