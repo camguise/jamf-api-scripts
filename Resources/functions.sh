@@ -84,7 +84,7 @@ function httpStatusCheck {
 		echo "Could not resolve host or connection timeout: ${JAMF_URL}" >&2
 		exit 1
 	elif [ ${httpCode} -eq 401 ]; then
-		echo "The authentication provided is invalid" >&2
+		echo "The authentication provided is invalid or you do not have permission to the requested resource" >&2
 		exit 1
 	elif [ ${httpCode} -eq 403 ]; then
 		echo "The authentication provided is does not have permission to the requested resource" >&2
