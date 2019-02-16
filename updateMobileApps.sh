@@ -68,6 +68,7 @@ done
 ## MAIN SCRIPT ##
 
 loadConfig
+testServerConnection
 
 apps=$(httpGet "/JSSResource/mobiledeviceapplications")
 
