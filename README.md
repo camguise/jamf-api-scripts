@@ -17,7 +17,7 @@ remote: Total 96 (delta 45), reused 79 (delta 36), pack-reused 0
 Unpacking objects: 100% (96/96), done.
 ```
 Then check that the files installed correctly.
-```
+```console
 $ cd jamf-api-scripts/
 $ ls -1
 LICENSE
