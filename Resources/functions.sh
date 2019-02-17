@@ -32,19 +32,56 @@ verbose () {
     fi
 }
 
+# -------------------------------------
 # Ask for confirmation before performing a command. Defaults to YES
-# confirm "Would you really like to execute?" && command
+# confirmYes "Would you really like to execute?" && command
 # Alternatively it can be used in an if statement to determine if multiple commands get run.
-# if confirm "Would you like to run these commands"; then
-confirm() {
+# if confirmYes "Would you like to run these commands?"; then
+# Globals:
+#   None
+# Arguments:
+#   verboseString - The string to be printed
+# Returns:
+#   true by default, false for any combination of "NO" (N, n, nO...)
+# -------------------------------------
+confirmYes () {
+	local promptString="${1}"
+	
     # call with a prompt string or use a default
-    read -r -p "${1:-Are you sure?} [Y/n] " response
+    read -r -p "${promptString:-Are you sure?} [Y/n] " response
     case "$response" in
         [nN][oO]|[nN]) 
             false
             ;;
         *)
             true
+            ;;
+    esac
+}
+
+# -------------------------------------
+# Ask for confirmation before performing a command. Defaults to NO
+# confirmNo "Would you really like to execute?" && command
+# Alternatively it can be used in an if statement to determine if multiple commands get run.
+# if confirmNo "Would you like to run these commands?"; then
+# Globals:
+#   None
+# Arguments:
+#   verboseString - The string to be printed
+# Returns:
+#   false by default, true for any combination of "YES" (y, Y, yEs...)
+# -------------------------------------
+confirmNo () {
+	local promptString="${1}"
+	
+    # call with a prompt string or use a default
+    read -r -p "${promptString:-Are you sure?} [y/N] " response
+    case "$response" in
+        [yY][eE][sS]|[yY]) 
+            true
+            ;;
+        *)
+            false
             ;;
     esac
 }
@@ -198,7 +235,7 @@ function createConfig {
 	if [[ -f "${OUTPUT_FILE}" ]]; then
 		echo "The output file you have specified already exists." >&2
 		echo "${OUTPUT_FILE}"
-		! confirm "Would you like to overwrite it?" && exit 1
+		! confirmYes "Would you like to overwrite it?" && exit 1
 	fi
 
 	if [[ ! -z "${OUTPUT_FILE}" ]]; then
