@@ -123,7 +123,7 @@ function getXPathValue () {
 }
 
 # -------------------------------------
-# Get string value of node returned by XPath expression
+# Get the value of a key relative to the same level as the specified ID
 # Useful to get a name (or other value form an ID)
 # New function inspired by oVirt API scripts
 # https://github.com/oVirt/ovirt-site/blob/master/source/develop/api/rest-api/rest-api-using-bash-automation.html.md
@@ -146,7 +146,18 @@ function getXPathValueFromID () {
     echo "${data}" | xmllint --xpath "string(/${searchPath}[id[text()='$itemID']]/${returnValue})" -
 }
 
-# get another value relative to the same level as the specified id
+# -------------------------------------
+# Get an array of IDs from the given XML path
+# New function inspired by Joshua Roskos & William Smith MacAdmins presentation
+# https://macadmins.psu.edu/2018/05/01/psumac18-263/
+# Globals:
+#   None
+# Arguments:
+#   xPath - xml path to desired node
+#   data  - xml data to be searched
+# Returns:
+#   Array of ID values for the specified node
+# -------------------------------------
 function getXPathIDsFromPath {
 	local xPath="$1"
 	local data="$2"
