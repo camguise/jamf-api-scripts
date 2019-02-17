@@ -16,10 +16,19 @@ realPath() {
     [[ $thePath = /* ]] && echo "$thePath" || echo "$PWD/${thePath#./}"
 }
 
+# -------------------------------------
 # Echo out the text only if the verbose flag is set
+# Globals:
+#   VERBOSE
+# Arguments:
+#   verboseString - The string to be printed
+# Returns:
+#   None
+# -------------------------------------
 verbose () {
+	local verboseString="$@"
 	if $VERBOSE; then
-        echo "$@"
+        echo "${verboseString}"
     fi
 }
 
