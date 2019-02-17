@@ -76,11 +76,11 @@ This script contains a number of variables with can be changed to values which m
 #### Usage
 ```console
 $ ./updateMobileApps.sh -c ~/Downloads/test.cfg
-Modifying App Classroom... [Success]
-Modifying App Facebook... [Success]
-Modifying App Google Chrome... [Success]
+Classroom............................... [Success]
+Facebook................................ [Success]
+Google Chrome........................... [Success]
 ...
-Modifying App Swift Playgrounds... [Success]
+Swift Playgrounds....................... [Success]
 ```
 
 #### Jamf Permissions

@@ -94,11 +94,10 @@ xmlData="<mobile_device_application>
 	</vpp>
 </mobile_device_application>"
 
-
-
+verbose "Modifying Apps:"
 for i in ${appIDs[@]}; do
-	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}")
-	printf "Modifying App ${appName}... "
+	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}" | iconv -f utf-8 -t ascii//translit)
+	printf "%-40.40s " "${appName}........................................................................."
 	$DRY_RUN && echo "[Dry Run]"
 	! $DRY_RUN && httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
 done
