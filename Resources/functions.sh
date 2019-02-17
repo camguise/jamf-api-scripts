@@ -86,11 +86,22 @@ confirmNo () {
     esac
 }
 
-# get number of rows returned by XPath expression
+# -------------------------------------
+# Get number of rows returned by XPath expression
+# Modified slightly from oVirt API scripts
+# https://github.com/oVirt/ovirt-site/blob/master/source/develop/api/rest-api/rest-api-using-bash-automation.html.md
+# Globals:
+#   VERBOSE
+# Arguments:
+#   xPath - xml path of items to count
+#   data  - xml data to be searched
+# Returns:
+#   Number of rows matching the given path
+# -------------------------------------
 function getXPathCount {
-    local xPath="count($1)"
-    local data=$2
-    echo "${data}" | xmllint --xpath $xPath -
+    local xPath="$1"
+    local data="$2"
+    echo "${data}" | xmllint --xpath "count($xPath)" -
 }
 
 # get string value of node returned by XPath expression
