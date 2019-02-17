@@ -109,7 +109,7 @@ function getXPathCount () {
 # Modified slightly from oVirt API scripts
 # https://github.com/oVirt/ovirt-site/blob/master/source/develop/api/rest-api/rest-api-using-bash-automation.html.md
 # Globals:
-#   VERBOSE
+#   None
 # Arguments:
 #   xPath - xml path to desired node
 #   data  - xml data to be searched
@@ -122,8 +122,22 @@ function getXPathValue () {
     echo "${data}" | xmllint --xpath "string(${xPath})" -
 }
 
-# get another value relative to the same level as the specified id
-function getXPathValueFromID {
+# -------------------------------------
+# Get string value of node returned by XPath expression
+# Useful to get a name (or other value form an ID)
+# New function inspired by oVirt API scripts
+# https://github.com/oVirt/ovirt-site/blob/master/source/develop/api/rest-api/rest-api-using-bash-automation.html.md
+# Globals:
+#   None
+# Arguments:
+#   searchPath  - xml path to desired node
+#   itemID      - ID value to search for
+#   returnValue - key of the value to be returned
+#   data        - xml data to be searched
+# Returns:
+#   String value found at the requested node
+# -------------------------------------
+function getXPathValueFromID () {
 	local searchPath="$1"
     local itemID="$2"
     local returnValue="$3"
