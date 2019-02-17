@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ## Global Variables ##
 # User custom variables
 CONNECTION_MAX_TIMEOUT=30 # Seconds before the connection attempt will timeout

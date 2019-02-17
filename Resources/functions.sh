@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Relies on globals.sh being sourced before this file.
 
 # -------------------------------------
