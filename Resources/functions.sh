@@ -166,9 +166,9 @@ function httpPut {
 }
 
 function createConfig {
-	local jssaddress=""
-	local jssadminuser=""
-	local jssadminpwd=""
+	local jamfAddress=""
+	local jamfApiUser=""
+	local jamfApiPassword=""
 	
 	if [[ -z "${OUTPUT_FILE}" ]]; then
 		echo "Error: You must specify an output file (-o)" >&2
@@ -184,16 +184,16 @@ function createConfig {
 	fi
 
 	if [[ ! -z "${OUTPUT_FILE}" ]]; then
-		read -p "Enter the JSS server address  : " jssaddress
-		read -p "Enter your JSS admin username : " jssadminuser
-		read -p "Enter your JSS admin password : " -s jssadminpwd
+		read -p "Enter the Jamf Pro server address : " jamfAddress
+		read -p "Enter your API username           : " jamfApiUser
+		read -p "Enter your API user password      : " -s jamfApiPassword
 		echo -e "\n"
 	
-		jsskey=$(echo -n "${jssadminuser}:${jssadminpwd}" | base64)
+		jamfApiKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
 	
 		echo "## Jamf API Configuration ##" > "${OUTPUT_FILE}"
-		echo "JAMF_AUTH_KEY='${jsskey}' # echo -n 'user:password' | base64" >> "${OUTPUT_FILE}"
-		echo "JAMF_URL='${jssaddress}' # Including port if not using 443" >> "${OUTPUT_FILE}"
+		echo "JAMF_AUTH_KEY='${jamfApiKey}' # echo -n 'user:password' | base64" >> "${OUTPUT_FILE}"
+		echo "JAMF_URL='${jamfAddress}' # Including port if not using 443" >> "${OUTPUT_FILE}"
 		CONFIG_FILE="${OUTPUT_FILE}"
 		verbose "Config file has been written. You can now use this file in other scripts."
 		verbose " -c ${CONFIG_FILE}"
