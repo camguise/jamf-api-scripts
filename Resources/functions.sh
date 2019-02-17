@@ -3,7 +3,7 @@
 # Relies on globals.sh being sourced before this file.
 
 # -------------------------------------
-# Gets the real path to a file relative to /
+# Gets the real path to a file relative to root of filesystem /
 # Globals:
 #   NONE
 # Arguments:
@@ -11,7 +11,7 @@
 # Returns:
 #   The full path to the file
 # -------------------------------------
-realPath() {
+realPath () {
 	local thePath="$1"
     [[ $thePath = /* ]] && echo "$thePath" || echo "$PWD/${thePath#./}"
 }
