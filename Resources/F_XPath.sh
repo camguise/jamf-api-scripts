@@ -1,3 +1,8 @@
+### Name: F_XPath.sh
+### Description: Various functions used for manipulating or getting information from XML data
+### Created by: Campbell Guise - cam@guise.co.nz
+### Updated: 2019-02-17
+
 # -------------------------------------
 # Get number of rows returned by XPath expression
 # Modified slightly from oVirt API scripts
