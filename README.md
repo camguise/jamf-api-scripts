@@ -4,7 +4,7 @@ Collection of scripts using the [Jamf Pro](https://www.jamf.com/products/jamf-pr
 
 ## Scripts
 
-Below is a description of each of the scripts in this project and how they can be used. Each script will have examples of usage and will define which priveleges are required by your API user in Jamf.
+Below is a description of each of the scripts in this project and how they can be used. Each script will have examples of usage and will define which priveileges are required by your API user in Jamf. You should only give your API user the minimum amount of permissions that you require to complete your desired task.
 
 ---
 
@@ -28,6 +28,18 @@ No jamf permissions are required to create the config file. The config file will
 
 ### testConfigFile.sh
 Test a configuration file. This will check that the file has the appropriate keys defined and also if the script can connect to the specified Jamf Pro server via the API. The server test uses the /JSSResource/buildings endpoint so your api user must have access to this endpoint.
+#### Usage
+```console
+$ ./testConfigFile.sh -c ~/Downloads/test.cfg
+Config file is valid
+Connection to server https://myserver.jamfcloud.com was successful
+```
+#### Jamf Permissions
+Jamf Pro Server Objects:
+
+| Item      | Create | Read     | Update | Delete |
+| --------- |:------:|:--------:|:------:|:------:|
+| Buildings | No     | **Yes**  | No     | No     |
 
 ---
 
