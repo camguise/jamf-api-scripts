@@ -1,4 +1,20 @@
+### Name: V_JamfConfig.sh
+### Description: Functions which work with the configuration files used by other scripts
+###   in this project.
+### Created by: Campbell Guise - cam@guise.co.nz
+### Updated: 2019-02-17
+
+# -------------------------------------
+# Interactive prompts to allow the user to create a new config file and save to disk.
+# Globals:
+#   OUTPUT_FILE
+# Arguments:
+#   NONE
+# Returns:
+#   NONE
+# -------------------------------------
 function createConfig () {
+	# local variables only, these are not used as parameters
 	local jamfAddress=""
 	local jamfApiUser=""
 	local jamfApiPassword=""
@@ -15,7 +31,8 @@ function createConfig () {
 		echo "${OUTPUT_FILE}"
 		! confirmYes "Would you like to overwrite it?" && exit 1
 	fi
-
+	
+	# Ask the user for input
 	if [[ ! -z "${OUTPUT_FILE}" ]]; then
 		read -p "Enter the Jamf Pro server address : " jamfAddress
 		read -p "Enter your API username           : " jamfApiUser
@@ -27,12 +44,21 @@ function createConfig () {
 		echo "## Jamf API Configuration ##" > "${OUTPUT_FILE}"
 		echo "JAMF_AUTH_KEY='${jamfApiKey}' # echo -n 'user:password' | base64" >> "${OUTPUT_FILE}"
 		echo "JAMF_URL='${jamfAddress}' # Including port if not using 443" >> "${OUTPUT_FILE}"
-		CONFIG_FILE="${OUTPUT_FILE}"
+		
 		verbose "Config file has been written. You can now use this file in other scripts."
-		verbose " -c ${CONFIG_FILE}"
+		verbose " -c ${OUTPUT_FILE}"
 	fi
 }
 
+# -------------------------------------
+# Loads the specified config file and checks that it contains the required keys
+# Globals:
+#   CONFIG_FILE
+# Arguments:
+#   NONE
+# Returns:
+#   NONE
+# -------------------------------------
 function loadConfig () {
 	if [[ -z "${CONFIG_FILE}" ]]; then
 		echo "Error: You must specify a config file (-c)" >&2
@@ -57,6 +83,15 @@ function loadConfig () {
 	verbose "Config file is valid"
 }
 
+# -------------------------------------
+# Tests the values supplied by the config file by making an API request.
+# Globals:
+#   JAMF_URL
+# Arguments:
+#   NONE
+# Returns:
+#   NONE
+# -------------------------------------
 function testServerConnection () {
 	httpGet "/JSSResource/buildings" > /dev/null
 	
