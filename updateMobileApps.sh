@@ -22,24 +22,20 @@ APP_vppAccountID=1 # If you are unsure on this run the below command for a list
 
 # Display help text to describe available command-line options
 helpText () {
-	echo "Usage: $(basename "$0") [options] -c /CONFIG/Path/file.cfg -o /OUTPUT/Path/file.cfg
+	echo "Usage: $(basename "$0") [options] -c /CONFIG/Path/file.cfg
 	
--- Set specified settings on all mobile device VPP apps
+-- Set specified settings on all mobile device apps
 e.g. $(basename "$0") -v -c ~/Downloads/customer.cfg
 	
 options:
     -h                show this help text
-    -o [file path]    output file for config. Can't be used with -c
-    -c [file path]    input an existing config file. Can't be used with -o
+    -c [file path]    input an existing config file
     -v                verbose output
     -n                dry run without performing any operations on the server"
 }
 
-while getopts ":o:c:vnh" opt; do
+while getopts ":c:vnh" opt; do
 	case $opt in
-		o)
-			OUTPUT_FILE=$(realPath "$OPTARG")
-			;;
 		c)
 			CONFIG_FILE=$(realPath "$OPTARG")
 			;;

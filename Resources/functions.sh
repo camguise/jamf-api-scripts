@@ -1,4 +1,4 @@
-function createConfig {
+function createConfig () {
 	local jamfAddress=""
 	local jamfApiUser=""
 	local jamfApiPassword=""
@@ -33,7 +33,7 @@ function createConfig {
 	fi
 }
 
-function testConfig {
+function loadConfig () {
 	if [[ -z "${CONFIG_FILE}" ]]; then
 		echo "Error: You must specify a config file (-c)" >&2
 		exit 1
@@ -44,6 +44,7 @@ function testConfig {
 		exit 1
 	fi
 	
+	verbose "Loading config ${CONFIG_FILE}..."
 	source "${CONFIG_FILE}"
 
 	for item in ${CONFIG_REQUIRED_ITEMS[@]}; do
@@ -56,32 +57,8 @@ function testConfig {
 	verbose "Config file is valid"
 }
 
-function testServerConnection {
+function testServerConnection () {
 	httpGet "/JSSResource/buildings" > /dev/null
 	
 	verbose "Connection to server ${JAMF_URL} was successful"
-}
-
-function loadConfig {
-	if [[ -z "${OUTPUT_FILE}" && -z "${CONFIG_FILE}" ]]; then
-		echo "Error: You must specify either an output file (-o) or config file (-c)" >&2
-		echo ""
-		helpText
-		exit 1
-	fi
-
-	if [[ ! -z "${CONFIG_FILE}" && ! -z "${OUTPUT_FILE}" ]]; then
-		echo "Error: You can't specify both a config file and an output file" >&2
-		echo ""
-		helpText
-		exit 1
-	fi
-
-	if [[ ! -z "${OUTPUT_FILE}" ]]; then
-		createConfig
-	fi
-
-	verbose "Loading config ${CONFIG_FILE}..."
-	
-	testConfig
 }

@@ -1,6 +1,6 @@
 # jamf-api-scripts
 
-Collection of scripts using the [Jamf Pro](https://www.jamf.com/products/jamf-pro/) API to simplify repetitive tasks. All scripts use a series of functions inside the Resources folder. These functions perform the actual API tasks on your Jamf Pro server. You must supply a config file to each script but the config file can be created with prompts by using the -o flag or the createConfigFile.sh script.
+Collection of scripts using the [Jamf Pro](https://www.jamf.com/products/jamf-pro/) API to simplify repetitive tasks. All scripts use a series of functions inside the Resources folder. These functions perform the actual API tasks on your Jamf Pro server. You must supply a config file to each script but the config file can be created with prompts by using the createConfigFile.sh script.
 
 ## Installation
 These scripts should work on any standard macOS installation. All scripts in the root directory do depend on the files in the Resources folder so it is best to clone this repository onto your machine and then all required paths are preserved.
