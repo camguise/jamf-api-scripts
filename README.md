@@ -2,8 +2,28 @@
 
 Collection of scripts using the [Jamf Pro](https://www.jamf.com/products/jamf-pro/) API to simplify repetitive tasks. All scripts use a series of functions inside the Resources folder. These functions perform the actual API tasks on your Jamf Pro server. You must supply a config file to each script but the config file can be created with prompts by using the -o flag or the createConfigFile.sh script.
 
-## Scripts
+## Installation
+These scripts should work on any standard macOS installation. All scripts in the root directory do depend on the files in the Resources folder so it is best to clone this repository onto your machine and then all required paths are preserved.
+```console
+$ cd /path/to/install/directory
+$ git clone https://github.com/camguise/jamf-api-scripts.git
+Cloning into 'jamf-api-scripts'...
+remote: Enumerating objects: 96, done.
+remote: Counting objects: 100% (96/96), done.
+remote: Compressing objects: 100% (58/58), done.
+remote: Total 96 (delta 45), reused 79 (delta 36), pack-reused 0
+Unpacking objects: 100% (96/96), done.
+$ ls -1 jamf-api-scripts/
+LICENSE
+README.md
+Resources
+createConfigFile.sh
+template.cfg
+testConfigFile.sh
+updateMobileApps.sh
+```
 
+## Scripts
 Below is a description of each of the scripts in this project and how they can be used. Each script will have examples of usage and will define which priveileges are required by your API user in Jamf. You should only give your API user the minimum amount of permissions that you require to complete your desired task.
 
 ---
