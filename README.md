@@ -4,6 +4,8 @@ Collection of scripts using the [Jamf Pro](https://www.jamf.com/products/jamf-pr
 
 ## Installation
 These scripts should work on any standard macOS installation. All scripts in the root directory do depend on the files in the Resources folder so it is best to clone this repository onto your machine and then all required paths are preserved.
+
+Download the scripts to a folder on your computer.
 ```console
 $ cd /path/to/install/directory
 $ git clone https://github.com/camguise/jamf-api-scripts.git
@@ -13,7 +15,11 @@ remote: Counting objects: 100% (96/96), done.
 remote: Compressing objects: 100% (58/58), done.
 remote: Total 96 (delta 45), reused 79 (delta 36), pack-reused 0
 Unpacking objects: 100% (96/96), done.
-$ ls -1 jamf-api-scripts/
+```
+Then check that the files installed correctly.
+```
+$ cd jamf-api-scripts/
+$ ls -1
 LICENSE
 README.md
 Resources
@@ -22,6 +28,7 @@ template.cfg
 testConfigFile.sh
 updateMobileApps.sh
 ```
+You should now be able to run any of the scripts using the examples below.
 
 ## Scripts
 Below is a description of each of the scripts in this project and how they can be used. Each script will have examples of usage and will define which priveileges are required by your API user in Jamf. You should only give your API user the minimum amount of permissions that you require to complete your desired task.
