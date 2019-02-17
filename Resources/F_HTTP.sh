@@ -66,9 +66,9 @@ function httpStatusCheck () {
 }
 
 # -------------------------------------
-# Performs an HTTP GET request for the specified endpoint on the Jamf Pro API
-# Make sure to pass the full path (including "/JSSResource") to this function
-# This function was inspired by Joshua Roskos & William Smith MacAdmins presentation
+# Performs an HTTP GET request for the specified endpoint on the Jamf Pro API.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# This function was inspired by Joshua Roskos & William Smith MacAdmins presentation.
 # https://macadmins.psu.edu/2018/05/01/psumac18-263/
 # Globals:
 #   JAMF_URL
@@ -81,7 +81,7 @@ function httpStatusCheck () {
 #   XML data
 # -------------------------------------
 function httpGet () {
-	local uriPath=$1
+	local uriPath="$1"
 	
 	local returnCode=0
 	local result=$( \
@@ -107,4 +107,48 @@ function httpGet () {
 	fi
 	
 	echo "${resultXML}"
+}
+
+# -------------------------------------
+# Performs an HTTP PUT request for the specified endpoint on the Jamf Pro API.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# This function was inspired by Joshua Roskos & William Smith MacAdmins presentation.
+# https://macadmins.psu.edu/2018/05/01/psumac18-263/
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to send data to
+#   xmlData - XML data to be sent via the API
+# Returns:
+#   XML data
+# -------------------------------------
+function httpPut () {
+	local uriPath="$1"
+	local xmlData="$2"
+	
+	local returnCode=0
+	local result=$( \
+	/usr/bin/curl \
+		--silent \
+		--request PUT \
+		--write-out "%{http_code}" \
+		--header "${HEADER_ACCEPT}" \
+		--header "${HEADER_CONTENT_TYPE}" \
+		--url ${JAMF_URL}/${uriPath} \
+		--data "${xmlData}" \
+		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
+		|| returnCode=$? )
+	
+	local resultStatus=${result: -3}
+	local resultXML=${result%???}
+	
+	if [ ${returnCode} -eq 0 ]; then
+		httpStatusCheck "PUT" "${resultStatus}" "${uriPath}" "${resultXML}"
+	else
+		echo "Curl connection failed with unknown return code ${returnCode}" >&2
+		exit 3
+	fi
 }
