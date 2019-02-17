@@ -2,9 +2,7 @@
 
 ## Source External Files ##
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
-source "${DIR}"/Resources/globals.sh
-source "${DIR}"/Resources/functions.sh
-source "${DIR}"/Resources/F_XPath.sh
+for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
 ## Command line options/arguments ##
 
