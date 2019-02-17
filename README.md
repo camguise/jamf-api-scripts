@@ -64,9 +64,9 @@ Connection to server https://myserver.jamfcloud.com was successful
 ```
 #### Jamf Permissions
 ##### Jamf Pro Server Objects
-| Item      | Create | Read     | Update | Delete |
-| --------- |:------:|:--------:|:------:|:------:|
-| Buildings | No     | **Yes**  | No     | No     |
+| Item       | Create | Read     | Update | Delete |
+| ---------- |:------:|:--------:|:------:|:------:|
+| Categories | No     | **Yes**  | No     | No     |
 
 ---
 
@@ -87,10 +87,7 @@ Swift Playgrounds....................... [Success]
 ##### Jamf Pro Server Objects
 | Item               | Create | Read     | Update  | Delete |
 | ------------------ |:------:|:--------:|:-------:|:------:|
-| Buildings*         | No     | **Yes**  | No      | No     |
 | Mobile Device Apps | No     | **Yes**  | **Yes** | No     |
-
-**For testing server connection*
 
 ## License
 This project is licensed under the GNU General Public License v3.0. You may use, distribute and copy it under the license terms.

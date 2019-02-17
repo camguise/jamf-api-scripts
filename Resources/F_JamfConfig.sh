@@ -85,15 +85,21 @@ function loadConfig () {
 
 # -------------------------------------
 # Tests the values supplied by the config file by making an API request.
+# Scripts which use this functions should specify and endpoint which they will already
+# need access to later in the script. This keeps the API user permissions to a minimum.
 # Globals:
 #   JAMF_URL
 # Arguments:
-#   NONE
+#   testEndpoint - URI for and endpoint to use for testing
 # Returns:
 #   NONE
 # -------------------------------------
 function testServerConnection () {
-	httpGet "/JSSResource/buildings" > /dev/null
+	local testEndpoint="$1"
 	
+	# httpGet function will exit the script and display appropriate error if required
+	httpGet "${testEndpoint}" > /dev/null
+	
+	# If there are no errors then the script will continue
 	verbose "Connection to server ${JAMF_URL} was successful"
 }
