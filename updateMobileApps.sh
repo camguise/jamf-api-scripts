@@ -4,6 +4,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
 source "${DIR}"/Resources/globals.sh
 source "${DIR}"/Resources/functions.sh
+source "${DIR}"/Resources/F_XPath.sh
 
 # App settings to be applied
 # You must supply a value for each of these items
