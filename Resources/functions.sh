@@ -91,7 +91,7 @@ confirmNo () {
 # Modified slightly from oVirt API scripts
 # https://github.com/oVirt/ovirt-site/blob/master/source/develop/api/rest-api/rest-api-using-bash-automation.html.md
 # Globals:
-#   VERBOSE
+#   None
 # Arguments:
 #   xPath - xml path of items to count
 #   data  - xml data to be searched
@@ -101,14 +101,25 @@ confirmNo () {
 function getXPathCount () {
     local xPath="$1"
     local data="$2"
-    echo "${data}" | xmllint --xpath "count($xPath)" -
+    echo "${data}" | xmllint --xpath "count(${xPath})" -
 }
 
-# get string value of node returned by XPath expression
-function getXPathValue {
-    local xPath="string($1)"
-    local data=$2
-    echo "${data}" | xmllint --xpath $xPath -
+# -------------------------------------
+# Get string value of node returned by XPath expression
+# Modified slightly from oVirt API scripts
+# https://github.com/oVirt/ovirt-site/blob/master/source/develop/api/rest-api/rest-api-using-bash-automation.html.md
+# Globals:
+#   VERBOSE
+# Arguments:
+#   xPath - xml path to desired node
+#   data  - xml data to be searched
+# Returns:
+#   String value found at the requested node
+# -------------------------------------
+function getXPathValue () {
+    local xPath="$1"
+    local data="$2"
+    echo "${data}" | xmllint --xpath "string(${xPath})" -
 }
 
 # get another value relative to the same level as the specified id
