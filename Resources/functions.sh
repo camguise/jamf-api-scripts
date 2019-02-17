@@ -226,7 +226,7 @@ function testConfig {
 function testServerConnection {
 	httpGet "/JSSResource/buildings" > /dev/null
 	
-	echo "Connection to server ${JAMF_URL} was successful"
+	verbose "Connection to server ${JAMF_URL} was successful"
 }
 
 function loadConfig {
