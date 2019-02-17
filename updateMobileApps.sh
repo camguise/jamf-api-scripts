@@ -39,10 +39,10 @@ options:
 while getopts ":o:c:vnh" opt; do
 	case $opt in
 		o)
-			OUTPUT_FILE=$(realpath "$OPTARG")
+			OUTPUT_FILE=$(realPath "$OPTARG")
 			;;
 		c)
-			CONFIG_FILE=$(realpath "$OPTARG")
+			CONFIG_FILE=$(realPath "$OPTARG")
 			;;
 		v)
 			VERBOSE=true

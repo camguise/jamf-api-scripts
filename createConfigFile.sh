@@ -23,7 +23,7 @@ options:
 while getopts ":o:vh" opt; do
 	case $opt in
 		o)
-			OUTPUT_FILE=$(realpath "$OPTARG")
+			OUTPUT_FILE=$(realPath "$OPTARG")
 			;;
 		v)
 			VERBOSE=true

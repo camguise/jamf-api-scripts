@@ -23,7 +23,7 @@ options:
 while getopts ":c:vh" opt; do
 	case $opt in
 		c)
-			CONFIG_FILE=$(realpath "$OPTARG")
+			CONFIG_FILE=$(realPath "$OPTARG")
 			;;
 		v)
 			VERBOSE=true

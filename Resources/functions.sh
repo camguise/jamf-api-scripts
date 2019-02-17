@@ -2,9 +2,18 @@
 
 # Relies on globals.sh being sourced before this file.
 
-# Gets the real path to a file
-realpath() {
-    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+# -------------------------------------
+# Gets the real path to a file relative to /
+# Globals:
+#   NONE
+# Arguments:
+#   thePath - The path to be converted to a real path
+# Returns:
+#   The full path to the file
+# -------------------------------------
+realPath() {
+	local thePath="$1"
+    [[ $thePath = /* ]] && echo "$thePath" || echo "$PWD/${thePath#./}"
 }
 
 # Echo out the text only if the verbose flag is set
