@@ -28,6 +28,7 @@ No jamf permissions are required to create the config file. The config file will
 
 ### testConfigFile.sh
 Test a configuration file. This will check that the file has the appropriate keys defined and also if the script can connect to the specified Jamf Pro server via the API. The server test uses the /JSSResource/buildings endpoint so your api user must have access to this endpoint.
+
 #### Usage
 ```console
 $ ./testConfigFile.sh -c ~/Downloads/test.cfg
@@ -35,8 +36,7 @@ Config file is valid
 Connection to server https://myserver.jamfcloud.com was successful
 ```
 #### Jamf Permissions
-Jamf Pro Server Objects:
-
+##### Jamf Pro Server Objects
 | Item      | Create | Read     | Update | Delete |
 | --------- |:------:|:--------:|:------:|:------:|
 | Buildings | No     | **Yes**  | No     | No     |
@@ -45,6 +45,25 @@ Jamf Pro Server Objects:
 
 ### updateMobileApps.sh
 This script contains a number of variables with can be changed to values which meet the needs of the environment. When run this script will modify all Mobile Device Apps in Jamf to set the values you have specified. E.g. You can say that all apps are to be deployed automatically (rather than via self service), enable VPP license distribution and specify the VPP account to be used.
+
+#### Usage
+```console
+$ ./updateMobileApps.sh -c ~/Downloads/test.cfg
+Modifying App Classroom... [Success]
+Modifying App Facebook... [Success]
+Modifying App Google Chrome... [Success]
+...
+Modifying App Swift Playgrounds... [Success]
+```
+
+#### Jamf Permissions
+##### Jamf Pro Server Objects
+| Item               | Create | Read     | Update  | Delete |
+| ------------------ |:------:|:--------:|:-------:|:------:|
+| Buildings*         | No     | **Yes**  | No      | No     |
+| Mobile Device Apps | No     | **Yes**  | **Yes** | No     |
+
+**For testing server connection*
 
 ## License
 This project is licensed under the GNU General Public License v3.0. You may use, distribute and copy it under the license terms.
