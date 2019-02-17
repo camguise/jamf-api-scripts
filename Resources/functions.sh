@@ -98,7 +98,7 @@ confirmNo () {
 # Returns:
 #   Number of rows matching the given path
 # -------------------------------------
-function getXPathCount {
+function getXPathCount () {
     local xPath="$1"
     local data="$2"
     echo "${data}" | xmllint --xpath "count($xPath)" -
