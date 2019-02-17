@@ -75,7 +75,7 @@ function getXPathValueFromID () {
 # Returns:
 #   Array of ID values for the specified node
 # -------------------------------------
-function getXPathIDsFromPath {
+function getXPathIDsFromPath () {
 	local xPath="$1"
 	local data="$2"
 	
