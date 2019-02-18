@@ -70,12 +70,12 @@ Connection to server https://myserver.jamfcloud.com was successful
 
 ---
 
-### updateMobileApps.sh
+### bulkChangeMobileApps.sh
 This script contains a number of variables with can be changed to values which meet the needs of the environment. When run this script will modify all Mobile Device Apps in Jamf to set the values you have specified. E.g. You can say that all apps are to be deployed automatically (rather than via self service), enable VPP license distribution and specify the VPP account to be used.
 
 #### Usage
 ```console
-$ ./updateMobileApps.sh -c ~/Downloads/test.cfg
+$ ./bulkChangeMobileApps.sh -c ~/Downloads/test.cfg
 Classroom............................... [Success]
 Facebook................................ [Success]
 Google Chrome........................... [Success]
