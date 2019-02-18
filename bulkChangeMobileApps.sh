@@ -52,6 +52,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent
 for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
 declare -a includeBundles
+declare -a excludeBundles
 
 ## Command line options/arguments ##
 
@@ -67,10 +68,11 @@ options:
     -c [file path]    input an existing config file
     -v                verbose output
     -n                dry run without performing any operations on the server
-    -I [file path]    include ONLY apps with bundle IDs contained in the include file"
+    -I [file path]    include ONLY apps with bundle IDs contained in the include file
+    -E [file path]    exclude bundle IDs contained in the exclude file from mass changes"
 }
 
-while getopts ":c:I:vnh" opt; do
+while getopts ":c:I:E:vnh" opt; do
 	case $opt in
 		c)
 			CONFIG_FILE=$(realPath "$OPTARG")
@@ -87,10 +89,17 @@ while getopts ":c:I:vnh" opt; do
 			;;
 		I)
 			if [[ ! -f "${OPTARG}" ]]; then
-				echo "Error: No config file found at ${OPTARG}" >&2
+				echo "Error: No include file found at ${OPTARG}" >&2
 				exit 1
 			fi
 			while read -r line; do includeBundles+=( "$line" ); done < "${OPTARG}"
+			;;
+		E)
+			if [[ ! -f "${OPTARG}" ]]; then
+				echo "Error: No exclude file found at ${OPTARG}" >&2
+				exit 1
+			fi
+			while read -r line; do excludeBundles+=( "$line" ); done < "${OPTARG}"
 			;;
 		\?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -113,7 +122,8 @@ apps=$(httpGet "/JSSResource/mobiledeviceapplications")
 appCount=$(getXPathCount "/mobile_device_applications/mobile_device_application" "${apps}")
 
 verbose "Count:     ${appCount}"
-verbose "Include:   ${#includeBundles[@]}"
+[[ "${#includeBundles[@]}" -eq 0 ]] && verbose "Include:   ALL" || verbose "Include:   ${#includeBundles[@]}"
+verbose "Exclude:   ${#excludeBundles[@]}"
 
 if [[ appCount -eq 0 ]]; then
 	echo "No apps found on server ${JAMF_URL}"
@@ -173,7 +183,13 @@ verbose "Modifying Apps:"
 for i in ${appIDs[@]}; do
 	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}" | iconv -f utf-8 -t ascii//translit)
 	appBundleID=$(getXPathValueFromID "/mobile_device_application" "$i" "/bundle_id" "${apps}" | iconv -f utf-8 -t ascii//translit)
+	
 	if [[ "${#includeBundles[@]}" -ne 0 ]] && arrayContains "${appBundleID}" "${includeBundles[@]}" || [[ "${#includeBundles[@]}" -eq 0 ]]; then
+		if arrayContains "${appBundleID}" "${excludeBundles[@]}"; then
+			$VERBOSE && printf "%-40.40s " "${appName}........................................................................."
+			$VERBOSE && echo "[Exclude]"
+			continue
+		fi
 		printf "%-40.40s " "${appName}........................................................................."
 		$DRY_RUN && echo "[Dry Run]"
 		! $DRY_RUN && httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
