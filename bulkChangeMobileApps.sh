@@ -51,6 +51,8 @@ APP_vppAccountID=""
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
 for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
+declare -a includeBundles
+
 ## Command line options/arguments ##
 
 # Display help text to describe available command-line options
@@ -64,10 +66,11 @@ options:
     -h                show this help text
     -c [file path]    input an existing config file
     -v                verbose output
-    -n                dry run without performing any operations on the server"
+    -n                dry run without performing any operations on the server
+    -I [file path]    include ONLY apps with bundle IDs contained in the include file"
 }
 
-while getopts ":c:vnh" opt; do
+while getopts ":c:I:vnh" opt; do
 	case $opt in
 		c)
 			CONFIG_FILE=$(realPath "$OPTARG")
@@ -81,6 +84,13 @@ while getopts ":c:vnh" opt; do
 			;;
 		n)
 			DRY_RUN=true
+			;;
+		I)
+			if [[ ! -f "${OPTARG}" ]]; then
+				echo "Error: No config file found at ${OPTARG}" >&2
+				exit 1
+			fi
+			while read -r line; do includeBundles+=( "$line" ); done < "${OPTARG}"
 			;;
 		\?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -161,7 +171,10 @@ fi
 verbose "Modifying Apps:"
 for i in ${appIDs[@]}; do
 	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}" | iconv -f utf-8 -t ascii//translit)
-	printf "%-40.40s " "${appName}........................................................................."
-	$DRY_RUN && echo "[Dry Run]"
-	! $DRY_RUN && httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
+	appBundleID=$(getXPathValueFromID "/mobile_device_application" "$i" "/bundle_id" "${apps}" | iconv -f utf-8 -t ascii//translit)
+	if arrayContains "${appBundleID}" "${includeBundles[@]}"; then
+		printf "%-40.40s " "${appName}........................................................................."
+		$DRY_RUN && echo "[Dry Run]"
+		! $DRY_RUN && httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
+	fi
 done

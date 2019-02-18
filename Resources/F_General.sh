@@ -86,3 +86,26 @@ confirmNo () {
             ;;
     esac
 }
+
+# -------------------------------------
+# Check if a value exists in an array
+# https://stackoverflow.com/questions/14366390/check-if-an-element-is-present-in-a-bash-array
+# Globals:
+#   None
+# Arguments:
+#   seeking - The value to search for
+#   in      - The array to be searched for value
+# Returns:
+#   0 if the value is found, 1 if not
+# -------------------------------------
+arrayContains () {
+    local seeking=$1; shift
+    local in=1
+    for element; do
+        if [[ $element == $seeking ]]; then
+            in=0
+            break
+        fi
+    done
+    return $in
+}
