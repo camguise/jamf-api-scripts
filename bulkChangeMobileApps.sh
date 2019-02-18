@@ -112,7 +112,8 @@ apps=$(httpGet "/JSSResource/mobiledeviceapplications")
 
 appCount=$(getXPathCount "/mobile_device_applications/mobile_device_application" "${apps}")
 
-verbose "Count: ${appCount}"
+verbose "Count:     ${appCount}"
+verbose "Include:   ${#includeBundles[@]}"
 
 if [[ appCount -eq 0 ]]; then
 	echo "No apps found on server ${JAMF_URL}"
@@ -172,7 +173,7 @@ verbose "Modifying Apps:"
 for i in ${appIDs[@]}; do
 	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}" | iconv -f utf-8 -t ascii//translit)
 	appBundleID=$(getXPathValueFromID "/mobile_device_application" "$i" "/bundle_id" "${apps}" | iconv -f utf-8 -t ascii//translit)
-	if arrayContains "${appBundleID}" "${includeBundles[@]}"; then
+	if [[ "${#includeBundles[@]}" -ne 0 ]] && arrayContains "${appBundleID}" "${includeBundles[@]}" || [[ "${#includeBundles[@]}" -eq 0 ]]; then
 		printf "%-40.40s " "${appName}........................................................................."
 		$DRY_RUN && echo "[Dry Run]"
 		! $DRY_RUN && httpPut "/JSSResource/mobiledeviceapplications/id/${i}" "${xmlData}" && echo "[Success]"
