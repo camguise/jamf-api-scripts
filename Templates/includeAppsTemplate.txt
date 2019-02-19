@@ -1,0 +1,2 @@
+com.facebook.Facebook
+com.apple.classroom
