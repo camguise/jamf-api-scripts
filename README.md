@@ -74,6 +74,7 @@ Connection to server https://myserver.jamfcloud.com was successful
 This script contains a number of variables with can be changed to values which meet the needs of the environment. When run this script will modify all Mobile Device Apps in Jamf to set the values you have specified. E.g. You can say that all apps are to be deployed automatically (rather than via self service), enable VPP license distribution and specify the VPP account to be used.
 
 #### Usage
+Standard use will modify all mobile device apps in your Jamf Pro server
 ```console
 $ ./bulkChangeMobileApps.sh -c ~/Downloads/test.cfg
 Classroom............................... [Success]
@@ -81,6 +82,34 @@ Facebook................................ [Success]
 Google Chrome........................... [Success]
 ...
 Swift Playgrounds....................... [Success]
+```
+You can choose to supply an include or exclude file which conatains a list of bundle identifiers. You can find the bundle identifiers in Jamf Pro or by executing a curl command to get all app names and bundle IDs via the API. There are example include and exlude files in the Templates folder. Some of these example commands are quite long and you may need to scroll to the right in the code samples below.
+
+Get all app names and bundle IDs
+```console
+$ /usr/bin/curl https://server.jamfcloud.com/JSSResource/mobiledeviceapplications -u jamfadmin | xmllint --format - | grep -E "bundle_id|display_name"
+    <display_name>Classroom</display_name>
+    <bundle_id>com.apple.classroom</bundle_id>
+    <display_name>Facebook</display_name>
+    <bundle_id>com.facebook.Facebook</bundle_id>
+    <display_name>Google Chrome</display_name>
+    <bundle_id>com.google.chrome.ios</bundle_id>
+    ...
+    <display_name>Swift Playgrounds</display_name>
+    <bundle_id>com.apple.Playgrounds</bundle_id>
+```
+Run script with include and exclude files
+```console
+$ ./bulkChangeMobileApps.sh -c ~/Downloads/test.cfg -v -I ~/Downloads/includeAppsTemplate.txt -E ~/Downloads/excludeAppsTemplate.txt
+Loading config /Users/username/Downloads/test.cfg...
+Config file is valid
+Connection to server https://server.jamfcloud.com was successful
+Count:     74
+Include:   2
+Exclude:   1
+Modifying Apps:
+Classroom............................... [Success]
+Facebook................................ [Exclude]
 ```
 
 #### Jamf Permissions
