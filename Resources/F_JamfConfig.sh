@@ -9,15 +9,17 @@
 # Globals:
 #   OUTPUT_FILE
 # Arguments:
-#   NONE
+#   jamfAddress     - Server address for Jamf [Optional]
+#   jamfApiUser     - API user account [Optional]
+#   jamfApiPassword - Password for API user [Optional]
 # Returns:
 #   NONE
 # -------------------------------------
 function createConfig () {
 	# local variables only, these are not used as parameters
-	local jamfAddress=""
-	local jamfApiUser=""
-	local jamfApiPassword=""
+	local jamfAddress="$1"
+	local jamfApiUser="$2"
+	local jamfApiPassword="$3"
 	
 	if [[ -z "${OUTPUT_FILE}" ]]; then
 		echo "Error: You must specify an output file (-o)" >&2
