@@ -152,3 +152,45 @@ function httpPut () {
 		exit 3
 	fi
 }
+
+# -------------------------------------
+# Performs an HTTP POST request for the specified endpoint on the Jamf Pro API.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to send data to
+#   xmlData - XML data to be sent via the API
+# Returns:
+#   XML data
+# -------------------------------------
+function httpPost () {
+	local uriPath="$1"
+	local xmlData="$2"
+	
+	local returnCode=0
+	local result=$( \
+	/usr/bin/curl \
+		--silent \
+		--request POST \
+		--write-out "%{http_code}" \
+		--header "${HEADER_ACCEPT}" \
+		--header "${HEADER_CONTENT_TYPE}" \
+		--url ${JAMF_URL}/${uriPath} \
+		--data "${xmlData}" \
+		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
+		|| returnCode=$? )
+	
+	local resultStatus=${result: -3}
+	local resultXML=${result%???}
+	
+	if [ ${returnCode} -eq 0 ]; then
+		httpStatusCheck "POST" "${resultStatus}" "${uriPath}" "${resultXML}"
+	else
+		echo "Curl connection failed with unknown return code ${returnCode}" >&2
+		exit 3
+	fi
+}
