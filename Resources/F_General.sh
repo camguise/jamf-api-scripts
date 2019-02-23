@@ -4,6 +4,46 @@
 ### Updated: 2019-02-17
 
 # -------------------------------------
+# Requests user input that must match a given regex
+# Globals:
+#   NONE
+# Arguments:
+#   requestString  - String to prompt the user for input. Will be printed after the word 'Enter'
+#   regexTest      - The regex that the user input must match
+#   regexError     - The error to print out if the string does not match the given regex
+#   passwordPrompt - true to ask for a password/secret value [Optional]
+# Returns:
+#   true or false depending on if there is a match
+# -------------------------------------
+function getUserInputMatchingRegex () {
+	local requestString="$1"
+	local regexTest="$2"
+	local regexError="$3"
+	local passwordPrompt="$4"
+	
+	if [[ "$passwordPrompt" == 'true' ]]; then
+		passwordPrompt=true
+	else
+		passwordPrompt=false
+	fi
+	
+	local returnValue=''
+	while [[ -z $returnValue ]]; do
+		if $passwordPrompt; then
+			read -p "Enter ${requestString} : " -s tempValue
+		else
+			read -p "Enter ${requestString} : " tempValue
+		fi
+		[[ -z "${tempValue}" ]] && echo "Error: You must specify ${requestString}" >&2 && continue
+		! regexCheck "${tempValue}" "${regexTest}" && echo "Error: ${regexError}" >&2 && continue
+	
+		returnValue=${tempValue}
+	done
+	
+	echo -n "${returnValue}"
+}
+
+# -------------------------------------
 # Checks a string against a given regular expression
 # Globals:
 #   NONE

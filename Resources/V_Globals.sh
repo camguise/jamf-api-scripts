@@ -12,6 +12,7 @@ HEADER_CONTENT_TYPE="Content-Type: text/xml"
 HEADER_ACCEPT="Accept: text/xml"
 CONFIG_REQUIRED_ITEMS=("JAMF_AUTH_KEY" "JAMF_URL")
 JAMF_URL_REGEX='^https:\/\/(([a-z]|[0-9])+\.)+([a-z]|[0-9])+:?(8443)?\/?([a-z]|[0-9])+$'
+REGEX_ANY='^.*$' # Matches a string with any characters excluding whitespace
 
 # Placeholder variable names
 VERBOSE=false
