@@ -52,33 +52,29 @@ done
 
 ## MAIN SCRIPT ##
 
-# TO-DO: make this into a function
-jamfAddress=''
-requestString='the Jamf Pro server address'
-regexTest="${JAMF_URL_REGEX}"
-regexError="You must specify a valid server URL, including 'https://'"
-while [[ -z $jamfAddress ]]; do
-	read -p "Enter ${requestString} : " tempAddress
-	[[ -z "${tempAddress}" ]] && echo "Error: You must specify ${requestString}" >&2 && continue
-	! regexCheck "${tempAddress}" "${regexTest}" && echo "Error: ${regexError}" >&2 && continue
-	
-	jamfAddress=${tempAddress}
-done
+jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
+	"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
+jamfAdminUser=$(getUserInputMatchingRegex "Jamf admin username" "^([a-z]|[0-9]|-)+$" \
+	"Username must contain only lowercase letters, numbers or a hyphen")
+jamfAdminPassword=$(getUserInputMatchingRegex "Jamf admin password" "${REGEX_ANY}" "" true)
+echo -e "\n"
 
-# Ask the user for a Jamf admin account
-# echo "Please provide your Jamf Pro Server admin credentials"
-# echo "These credentials will not be saved anywhere they are only used to create the base setup including a new API user with limited permissions"
-# read -p "Enter the Jamf Pro server address : " jamfAddress
-# read -p "Enter your admin username         : " jamfAdminUser
-# read -p "Enter your admin user password    : " -s jamfAdminPassword
-# echo -e "\n"
-# 
-# jamfAdminKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
-# 
-# JAMF_AUTH_KEY="${jamfAdminKey}"
-# JAMF_URL="${jamfAddress}"
-# 
-# jamfApiUser="${COMPANY_NAME}-api"
-# jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
+jamfAdminKey=$(echo -n "${jamfAdminUser}:${jamfAdminPassword}" | base64)
+
+JAMF_AUTH_KEY="${jamfAdminKey}"
+JAMF_URL="${jamfAddress}"
+
+jamfApiUser="${COMPANY_NAME}-api"
+jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
+jamfApiKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
+
+echo "JAMF_URL: ${JAMF_URL}"
+echo "jamfAdminUser: ${jamfAdminUser}"
+echo "jamfAdminPassword: ${jamfAdminPassword}"
+echo "JAMF_AUTH_KEY: ${JAMF_AUTH_KEY}"
+echo "jamfApiUser: ${jamfApiUser}"
+echo "jamfApiPassword: ${jamfApiPassword}"
+echo "jamfApiKey: ${jamfApiKey}"
+
 # 
 # createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
