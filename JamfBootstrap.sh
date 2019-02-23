@@ -74,4 +74,42 @@ JAMF_URL="${jamfAddress}"
 jamfApiUser="${COMPANY_NAME}-api"
 jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
 
+xmlData="
+<account>
+  <name>${jamfApiUser}</name>
+  <directory_user>false</directory_user>
+  <full_name>API User</full_name>
+  <email/>
+  <email_address/>
+  <enabled>Enabled</enabled>
+  <force_password_change>false</force_password_change>
+  <access_level>Full Access</access_level>
+  <privilege_set>Custom</privilege_set>
+  <privileges>
+    <jss_objects>
+      <privilege>Read Categories</privilege>
+    </jss_objects>
+    <jss_settings/>
+    <jss_actions/>
+    <recon/>
+    <casper_admin/>
+    <casper_remote/>
+    <casper_imaging/>
+  </privileges>
+</account>
+"
+
+httpPost "/JSSResource/accounts" "${xmlData}"
+
 createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
+apiUserXml=$(httpGet "/JSSResource/accounts/username/${jamfApiUser}")
+apiUserID=$(getXPathValue "/account/id" "${apiUserXml}")
+echo "####################################################################################"
+echo "# You need to go to the Jamf Pro server and set the password for your new API user #"
+echo "# URL: ${JAMF_URL}/accounts.html?id=${apiUserID}&o=u                               #"
+echo "# User: ${jamfApiUser}                                                             #"
+echo "# Password: ${jamfApiPassword}                                                     #"
+echo "# -------------------------------------------------------------------------------- #"
+echo "# You can then test your config file:                                              #"
+echo "# $ ./testConfigFile.sh -c ${OUTPUT_FILE}                                          #"
+echo "####################################################################################"
