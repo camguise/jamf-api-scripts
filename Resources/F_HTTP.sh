@@ -79,12 +79,14 @@ function httpStatusCheck () {
 #   HEADER_CONTENT_TYPE
 #   JAMF_AUTH_KEY
 # Arguments:
-#   uriPath - API endpoint to get data from
+#   uriPath     - API endpoint to get data from
+#   ignoreError - true = Don't exit script for 404 error (used by httpExists function)
 # Returns:
 #   XML data
 # -------------------------------------
 function httpGet () {
 	local uriPath="$1"
+	local ignoreError="$2"
 	
 	local returnCode=0
 	local result=$( \
@@ -103,13 +105,49 @@ function httpGet () {
 	local resultXML=${result%???}
 	
 	if [ ${returnCode} -eq 0 ]; then
-		httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+		if [[ "${ignoreError}" != "true" ]]; then
+			httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+		else
+			if [[ "${resultStatus}" == '200' ]]; then
+				echo "${resultXML}"
+				return 0
+			elif [[ "${resultStatus}" == '404' ]]; then
+				return 1
+			else
+				httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+			fi
+		fi
 	else
 		echo "Curl connection failed with unknown return code ${returnCode}" >&2
 		exit 3
 	fi
-	
-	echo "${resultXML}"
+}
+
+# -------------------------------------
+# Performs an HTTP GET request for the specified endpoint to check if it exists.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to check
+# Returns:
+#   true or false
+# -------------------------------------
+function httpExists () {
+	local uriPath="$1"
+	{ # try
+
+		httpGet "${uriPath}" true 2>&1 > /dev/null &&
+		# Test passed
+		true
+
+	} || { # catch
+		# Error in test command
+		false
+	}
 }
 
 # -------------------------------------
