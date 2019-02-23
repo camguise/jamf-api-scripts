@@ -4,6 +4,30 @@
 ### Updated: 2019-02-17
 
 # -------------------------------------
+# Checks a string against a given regular expression
+# Globals:
+#   NONE
+# Arguments:
+#   checkString - The string to be checked
+#   regex       - The regex to be tested
+# Returns:
+#   true or false depending on if there is a match
+# -------------------------------------
+regexCheck () {
+	local checkString="$1"
+	local regex="/${2}/{print \$0}"
+	
+	regexCheck=$(echo "${checkString}" | awk "!${regex}")
+	
+	if [[ -z $regexCheck ]]; then
+		# Exact match for regex
+		true
+	else
+		false
+	fi
+}
+
+# -------------------------------------
 # Gets the real path to a file relative to root of filesystem /
 # Globals:
 #   NONE
