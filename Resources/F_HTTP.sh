@@ -51,6 +51,9 @@ function httpStatusCheck () {
 	elif [ ${httpCode} -eq 404 ]; then
 		echo "The requested resource was not found (404): ${JAMF_URL}/${uriPath}" >&2
 		exit 1
+	elif [ ${httpCode} -eq 409 ]; then
+		echo "The the resource you are trying to create already exists or there is a duplicate name" >&2
+		exit 1
 	elif [[ ${httpCode} -eq 503 && "${returnData}" == "${jamfError503}" ]]; then
 		echo "The Jamf API is not finished being provisioned yet for this server: ${JAMF_URL}" >&2
 		exit 1
@@ -193,4 +196,46 @@ function httpPost () {
 		echo "Curl connection failed with unknown return code ${returnCode}" >&2
 		exit 3
 	fi
+}
+
+# -------------------------------------
+# Performs an HTTP DELETE request for the specified endpoint on the Jamf Pro API.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to be deleted
+# Returns:
+#   XML data
+# -------------------------------------
+function httpDelete () {
+	local uriPath="$1"
+	
+	local returnCode=0
+	local result=$( \
+	/usr/bin/curl \
+		--silent \
+		--max-time ${CONNECTION_MAX_TIMEOUT} \
+		--request DELETE \
+		--write-out "%{http_code}" \
+		--header "${HEADER_ACCEPT}" \
+		--header "${HEADER_CONTENT_TYPE}" \
+		--url ${JAMF_URL}/${uriPath} \
+		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
+		|| returnCode=$? )
+		
+	local resultStatus=${result: -3}
+	local resultXML=${result%???}
+	
+	if [ ${returnCode} -eq 0 ]; then
+		httpStatusCheck "DELETE" "${resultStatus}" "${uriPath}" "${resultXML}"
+	else
+		echo "Curl connection failed with unknown return code ${returnCode}" >&2
+		exit 3
+	fi
+	
+	echo "${resultXML}"
 }
