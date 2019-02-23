@@ -52,6 +52,13 @@ done
 
 ## MAIN SCRIPT ##
 
+if [[ -z "${OUTPUT_FILE}" ]]; then
+	echo "Error: You must specify an output file (-o)" >&2
+	echo ""
+	helpText
+	exit 1
+fi
+
 jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
 	"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
 jamfAdminUser=$(getUserInputMatchingRegex "Jamf admin username" "^([a-z]|[0-9]|-)+$" \
@@ -66,15 +73,5 @@ JAMF_URL="${jamfAddress}"
 
 jamfApiUser="${COMPANY_NAME}-api"
 jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
-jamfApiKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
 
-echo "JAMF_URL: ${JAMF_URL}"
-echo "jamfAdminUser: ${jamfAdminUser}"
-echo "jamfAdminPassword: ${jamfAdminPassword}"
-echo "JAMF_AUTH_KEY: ${JAMF_AUTH_KEY}"
-echo "jamfApiUser: ${jamfApiUser}"
-echo "jamfApiPassword: ${jamfApiPassword}"
-echo "jamfApiKey: ${jamfApiKey}"
-
-# 
-# createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
+createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
