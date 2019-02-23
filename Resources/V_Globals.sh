@@ -11,6 +11,7 @@ CONNECTION_MAX_TIMEOUT=30 # Seconds before a HTTP connection attempt will timeou
 HEADER_CONTENT_TYPE="Content-Type: text/xml"
 HEADER_ACCEPT="Accept: text/xml"
 CONFIG_REQUIRED_ITEMS=("JAMF_AUTH_KEY" "JAMF_URL")
+JAMF_URL_REGEX='^https:\/\/(([a-z]|[0-9])+\.)+([a-z]|[0-9])+:?(8443)?\/?([a-z]|[0-9])+$'
 
 # Placeholder variable names
 VERBOSE=false
