@@ -6,6 +6,8 @@
 ### Created by: Campbell Guise - cam@guise.co.nz
 ### Updated: 2019-02-23
 
+COMPANY_NAME="cyclone" # Used to create api user
+
 ## Source External Files ##
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
 for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
@@ -50,3 +52,31 @@ done
 
 ## MAIN SCRIPT ##
 
+# TO-DO: make this into a function
+jamfAddress=''
+requestString='the Jamf Pro server address'
+while [[ -z $jamfAddress ]]; do
+	read -p "Enter ${requestString} : " tempAddress
+	[[ -z "${tempAddress}" ]] && echo "Error: You must specify ${requestString}" >&2 && continue
+	! regexCheck "${tempAddress}" "$JAMF_URL_REGEX" && echo "Error: You must specify a valid server URL" >&2 && continue
+	
+	jamfAddress=${tempAddress}
+done
+
+# Ask the user for a Jamf admin account
+# echo "Please provide your Jamf Pro Server admin credentials"
+# echo "These credentials will not be saved anywhere they are only used to create the base setup including a new API user with limited permissions"
+# read -p "Enter the Jamf Pro server address : " jamfAddress
+# read -p "Enter your admin username         : " jamfAdminUser
+# read -p "Enter your admin user password    : " -s jamfAdminPassword
+# echo -e "\n"
+# 
+# jamfAdminKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
+# 
+# JAMF_AUTH_KEY="${jamfAdminKey}"
+# JAMF_URL="${jamfAddress}"
+# 
+# jamfApiUser="${COMPANY_NAME}-api"
+# jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
+# 
+# createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
