@@ -55,10 +55,12 @@ done
 # TO-DO: make this into a function
 jamfAddress=''
 requestString='the Jamf Pro server address'
+regexTest="${JAMF_URL_REGEX}"
+regexError="You must specify a valid server URL, including 'https://'"
 while [[ -z $jamfAddress ]]; do
 	read -p "Enter ${requestString} : " tempAddress
 	[[ -z "${tempAddress}" ]] && echo "Error: You must specify ${requestString}" >&2 && continue
-	! regexCheck "${tempAddress}" "$JAMF_URL_REGEX" && echo "Error: You must specify a valid server URL" >&2 && continue
+	! regexCheck "${tempAddress}" "${regexTest}" && echo "Error: ${regexError}" >&2 && continue
 	
 	jamfAddress=${tempAddress}
 done
