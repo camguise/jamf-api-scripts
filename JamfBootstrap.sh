@@ -12,6 +12,9 @@ COMPANY_NAME="Cyclone" # Short name of the company (should not contain spaces or
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
 for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
+### Remove ###
+source ~/Downloads/cycduddev-jssadmin.cfg
+
 ## Command line options/arguments ##
 
 # Display help text to describe available command-line options
@@ -62,17 +65,19 @@ fi
 ! regexCheck "${COMPANY_NAME}" "^([a-z]|[A-Z]|[0-9]|-)+$" && \
 	echo "Error: COMPANY_NAME must contain only lowercase letters, numbers or a hyphen" >&2 && exit 1
 
-jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
-	"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
-jamfAdminUser=$(getUserInputMatchingRegex "Jamf admin username" "^([a-z]|[0-9]|-)+$" \
-	"Username must contain only lowercase letters, numbers or a hyphen")
-jamfAdminPassword=$(getUserInputMatchingRegex "Jamf admin password" "${REGEX_ANY}" "" true)
-echo -e "\n"
+if [[ -z "${JAMF_URL}" && -z "${JAMF_AUTH_KEY}" ]]; then
+	jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
+		"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
+	jamfAdminUser=$(getUserInputMatchingRegex "Jamf admin username" "^([a-z]|[0-9]|-)+$" \
+		"Username must contain only lowercase letters, numbers or a hyphen")
+	jamfAdminPassword=$(getUserInputMatchingRegex "Jamf admin password" "${REGEX_ANY}" "" true)
+	echo -e "\n"
 
-jamfAdminKey=$(echo -n "${jamfAdminUser}:${jamfAdminPassword}" | base64)
+	jamfAdminKey=$(echo -n "${jamfAdminUser}:${jamfAdminPassword}" | base64)
 
-JAMF_AUTH_KEY="${jamfAdminKey}"
-JAMF_URL="${jamfAddress}"
+	JAMF_AUTH_KEY="${jamfAdminKey}"
+	JAMF_URL="${jamfAddress}"
+fi
 
 testServerConnection "/JSSResource/accounts"
 
