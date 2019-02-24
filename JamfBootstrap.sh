@@ -31,10 +31,13 @@ options:
     -v                verbose output"
 }
 
-while getopts ":o:vh" opt; do
+while getopts ":o:C:vh" opt; do
 	case $opt in
 		o)
 			OUTPUT_FILE=$(realPath "$OPTARG")
+			;;
+		C)
+			csvFile=$(realPath "$OPTARG")
 			;;
 		v)
 			VERBOSE=true
@@ -80,16 +83,50 @@ if [[ -z "${JAMF_URL}" && -z "${JAMF_AUTH_KEY}" ]]; then
 	JAMF_URL="${jamfAddress}"
 fi
 
-testServerConnection "/JSSResource/accounts"
-
 lowerCompanyName=$(echo "${COMPANY_NAME}" | awk '{print tolower($0)}')
 jamfApiUser="${lowerCompanyName}-api"
 jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
 
+testServerConnection "/JSSResource/accounts"
+
+if [[ ! -z "${csvFile}" ]]; then
+	if validateCSV "${csvFile}"; then
+		IFS= read -r line < "${csvFile}"
+		groupsLine=$(echo "${line}" | awk -F",%groups_start%,|,NULL,|,%groups_end%," '{ print $2; }')
+
+		buildings=()
+		echo "Found the following building from ${inputCSV}:"
+		IFS=, read -ra fields <<<"${groupsLine}"
+		for field in "${fields[@]}"; do
+			echo " - ${field}"
+			buildings+=("${field}")
+		done
+
+		echo ""
+		echo "Check that these group names are correct before continuing."
+		! confirmNo "Are the group names correct?" && echo "Canceling..." >&2 && exit 1
+
+		verbose "Continuing..."
+		
+		for building in "${buildings[@]}"; do
+			urlBuilding=$(uriEncode "${building}")
+			xmlData="<building><name>${building}</name></building>"
+			if ! httpExists "/JSSResource/buildings/name/${urlBuilding}"; then
+				verbose "Adding building ${building}..."
+				httpPost "/JSSResource/buildings" "${xmlData}"
+			else
+				verbose "Building ${building} already exists"
+			fi
+		done
+	else
+		exit 1
+	fi
+fi
+
 ## Create saved mobile device Search for data export in future
 xmlData="
 <advanced_mobile_device_search>
-  <name>${COMPANY_NAME}Export</name>
+  <name>${COMPANY_NAME} Export</name>
   <sort_1/>
   <sort_2/>
   <sort_3/>
@@ -125,12 +162,12 @@ xmlData="
   </display_fields>
 </advanced_mobile_device_search>
 "
-
-if httpExists "/JSSResource/advancedmobiledevicesearches/name/${COMPANY_NAME}Export"; then
-	verbose "Updating ${COMPANY_NAME}Export..."
-	httpPut "/JSSResource/advancedmobiledevicesearches/name/${COMPANY_NAME}Export" "${xmlData}"
+urlSearchName=$(uriEncode "${COMPANY_NAME} Export")
+if httpExists "/JSSResource/advancedmobiledevicesearches/name/${urlSearchName}"; then
+	verbose "Updating ${COMPANY_NAME} Export..."
+	httpPut "/JSSResource/advancedmobiledevicesearches/name/${urlSearchName}" "${xmlData}"
 else
-	verbose "Adding ${COMPANY_NAME}Export..."
+	verbose "Adding ${COMPANY_NAME} Export..."
 	httpPost "/JSSResource/advancedmobiledevicesearches" "${xmlData}"
 fi
 
@@ -138,7 +175,7 @@ fi
 departments=("Staff BYOD" "Staff School Owned" "Student 1:1" "Student BYOD" "Student Shared")
 
 for department in "${departments[@]}"; do
-	urlDepartment=$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "${department}")
+	urlDepartment=$(uriEncode "${department}")
 	xmlData="<department><name>${department}</name></department>"
 	if ! httpExists "/JSSResource/departments/name/${urlDepartment}"; then
 		verbose "Adding ${department}..."
