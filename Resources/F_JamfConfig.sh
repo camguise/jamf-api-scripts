@@ -2,22 +2,24 @@
 ### Description: Functions which work with the configuration files used by other scripts
 ###   in this project.
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
 
 # -------------------------------------
 # Interactive prompts to allow the user to create a new config file and save to disk.
 # Globals:
 #   OUTPUT_FILE
 # Arguments:
-#   NONE
+#   jamfAddress     - Server address for Jamf [Optional]
+#   jamfApiUser     - API user account [Optional]
+#   jamfApiPassword - Password for API user [Optional]
 # Returns:
 #   NONE
 # -------------------------------------
 function createConfig () {
 	# local variables only, these are not used as parameters
-	local jamfAddress=""
-	local jamfApiUser=""
-	local jamfApiPassword=""
+	local jamfAddress="$1"
+	local jamfApiUser="$2"
+	local jamfApiPassword="$3"
 	
 	if [[ -z "${OUTPUT_FILE}" ]]; then
 		echo "Error: You must specify an output file (-o)" >&2
@@ -34,15 +36,13 @@ function createConfig () {
 	
 	# Ask the user for input
 	if [[ ! -z "${OUTPUT_FILE}" ]]; then
-		printf "Enter the Jamf Pro server address : "
-		read jamfAddress
-		[ ! -t 0 ] && echo "${jamfAddress}"
-		printf "Enter your API username           : "
-		read jamfApiUser
-		[ ! -t 0 ] && echo "${jamfApiUser}"
-		printf "Enter your API user password      : "
-		read -s jamfApiPassword
-		echo ""
+		
+		[ ! -z "${jamfAddress}" ] || jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
+	"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
+
+		[ ! -z "${jamfApiUser}" ] || jamfApiUser=$(getUserInputMatchingRegex "Jamf Pro API username  " "^([a-z]|[0-9]|-)+$" \
+	"Username must contain only lowercase letters, numbers or a hyphen")
+		[ ! -z "${jamfApiPassword}" ] || jamfApiPassword=$(getUserInputMatchingRegex "Jamf Pro API password  " "${REGEX_ANY}" "" true)
 	
 		jamfApiKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
 	

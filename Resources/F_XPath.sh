@@ -1,7 +1,21 @@
 ### Name: F_XPath.sh
 ### Description: Various functions used for manipulating or getting information from XML data
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
+
+# -------------------------------------
+# Validate a string to see if it contains valid XML data
+# Globals:
+#   None
+# Arguments:
+#   data  - xml data to be validated
+# Returns:
+#   None
+# -------------------------------------
+function validateXML () {
+	local data="$1"
+	echo "${data}" | xmllint --noout - 2>&1 > /dev/null || exit 1
+}
 
 # -------------------------------------
 # Get number of rows returned by XPath expression
@@ -18,6 +32,8 @@
 function getXPathCount () {
     local xPath="$1"
     local data="$2"
+    
+    validateXML "${data}"
     echo "${data}" | xmllint --xpath "count(${xPath})" -
 }
 
@@ -36,6 +52,8 @@ function getXPathCount () {
 function getXPathValue () {
     local xPath="$1"
     local data="$2"
+    
+    validateXML "${data}"
     echo "${data}" | xmllint --xpath "string(${xPath})" -
 }
 
@@ -60,6 +78,7 @@ function getXPathValueFromID () {
     local returnValue="$3"
     local data="$4"
     
+    validateXML "${data}"
     echo "${data}" | xmllint --xpath "string(/${searchPath}[id[text()='$itemID']]/${returnValue})" -
 }
 
@@ -79,6 +98,7 @@ function getXPathIDsFromPath () {
 	local xPath="$1"
 	local data="$2"
 	
+	validateXML "${data}"
 	echo "${data}" | /usr/bin/xpath "${xPath}" 2> /dev/null \
 	| /usr/bin/perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}'
 }

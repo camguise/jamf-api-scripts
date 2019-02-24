@@ -3,7 +3,7 @@
 ###   the scripts to make simplified function calls. These HTTP requests will not require
 ###   server urls or header values, only the API endpoint paths.
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
 
 # -------------------------------------
 # Checks the result of an API call (via cURL command) for know HTTP error codes. The
@@ -51,6 +51,9 @@ function httpStatusCheck () {
 	elif [ ${httpCode} -eq 404 ]; then
 		echo "The requested resource was not found (404): ${JAMF_URL}/${uriPath}" >&2
 		exit 1
+	elif [ ${httpCode} -eq 409 ]; then
+		echo "The the resource you are trying to create already exists or there is a duplicate name" >&2
+		exit 1
 	elif [[ ${httpCode} -eq 503 && "${returnData}" == "${jamfError503}" ]]; then
 		echo "The Jamf API is not finished being provisioned yet for this server: ${JAMF_URL}" >&2
 		exit 1
@@ -76,12 +79,14 @@ function httpStatusCheck () {
 #   HEADER_CONTENT_TYPE
 #   JAMF_AUTH_KEY
 # Arguments:
-#   uriPath - API endpoint to get data from
+#   uriPath     - API endpoint to get data from
+#   ignoreError - true = Don't exit script for 404 error (used by httpExists function)
 # Returns:
 #   XML data
 # -------------------------------------
 function httpGet () {
 	local uriPath="$1"
+	local ignoreError="$2"
 	
 	local returnCode=0
 	local result=$( \
@@ -100,13 +105,51 @@ function httpGet () {
 	local resultXML=${result%???}
 	
 	if [ ${returnCode} -eq 0 ]; then
-		httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+		if [[ "${ignoreError}" != "true" ]]; then
+			httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+			echo "${resultXML}"
+			return 0
+		else
+			if [[ "${resultStatus}" == '200' ]]; then
+				echo "${resultXML}"
+				return 0
+			elif [[ "${resultStatus}" == '404' ]]; then
+				return 1
+			else
+				httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+			fi
+		fi
 	else
 		echo "Curl connection failed with unknown return code ${returnCode}" >&2
 		exit 3
 	fi
-	
-	echo "${resultXML}"
+}
+
+# -------------------------------------
+# Performs an HTTP GET request for the specified endpoint to check if it exists.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to check
+# Returns:
+#   true or false
+# -------------------------------------
+function httpExists () {
+	local uriPath="$1"
+	{ # try
+
+		httpGet "${uriPath}" true 2>&1 > /dev/null &&
+		# Test passed
+		true
+
+	} || { # catch
+		# Error in test command
+		false
+	}
 }
 
 # -------------------------------------
@@ -151,4 +194,88 @@ function httpPut () {
 		echo "Curl connection failed with unknown return code ${returnCode}" >&2
 		exit 3
 	fi
+}
+
+# -------------------------------------
+# Performs an HTTP POST request for the specified endpoint on the Jamf Pro API.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to send data to
+#   xmlData - XML data to be sent via the API
+# Returns:
+#   XML data
+# -------------------------------------
+function httpPost () {
+	local uriPath="$1"
+	local xmlData="$2"
+	
+	local returnCode=0
+	local result=$( \
+	/usr/bin/curl \
+		--silent \
+		--request POST \
+		--write-out "%{http_code}" \
+		--header "${HEADER_ACCEPT}" \
+		--header "${HEADER_CONTENT_TYPE}" \
+		--url ${JAMF_URL}/${uriPath} \
+		--data "${xmlData}" \
+		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
+		|| returnCode=$? )
+	
+	local resultStatus=${result: -3}
+	local resultXML=${result%???}
+	
+	if [ ${returnCode} -eq 0 ]; then
+		httpStatusCheck "POST" "${resultStatus}" "${uriPath}" "${resultXML}"
+	else
+		echo "Curl connection failed with unknown return code ${returnCode}" >&2
+		exit 3
+	fi
+}
+
+# -------------------------------------
+# Performs an HTTP DELETE request for the specified endpoint on the Jamf Pro API.
+# Make sure to pass the full path (including "/JSSResource") to this function.
+# Globals:
+#   JAMF_URL
+#   HEADER_ACCEPT
+#   HEADER_CONTENT_TYPE
+#   JAMF_AUTH_KEY
+# Arguments:
+#   uriPath - API endpoint to be deleted
+# Returns:
+#   XML data
+# -------------------------------------
+function httpDelete () {
+	local uriPath="$1"
+	
+	local returnCode=0
+	local result=$( \
+	/usr/bin/curl \
+		--silent \
+		--max-time ${CONNECTION_MAX_TIMEOUT} \
+		--request DELETE \
+		--write-out "%{http_code}" \
+		--header "${HEADER_ACCEPT}" \
+		--header "${HEADER_CONTENT_TYPE}" \
+		--url ${JAMF_URL}/${uriPath} \
+		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
+		|| returnCode=$? )
+		
+	local resultStatus=${result: -3}
+	local resultXML=${result%???}
+	
+	if [ ${returnCode} -eq 0 ]; then
+		httpStatusCheck "DELETE" "${resultStatus}" "${uriPath}" "${resultXML}"
+	else
+		echo "Curl connection failed with unknown return code ${returnCode}" >&2
+		exit 3
+	fi
+	
+	echo "${resultXML}"
 }

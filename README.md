@@ -23,10 +23,10 @@ $ ls -1
 LICENSE
 README.md
 Resources
+bulkChangeMobileApps.sh
 createConfigFile.sh
 template.cfg
 testConfigFile.sh
-updateMobileApps.sh
 ```
 You should now be able to run any of the scripts using the examples below.
 
@@ -41,10 +41,9 @@ Create a config file for use with other scripts. You must supply a path to the c
 When running this command you will be asked to supply the values for server address, api username and api user password.
 ```console
 $ ./createConfigFile.sh -o ~/Downloads/test.cfg
-Enter the JSS server address  : https://myserver.jamfcloud.com
-Enter your JSS admin username : api-user
-Enter your JSS admin password : 
-
+Enter Jamf Pro server address : https://server.jamfcloud.com
+Enter Jamf Pro API username   : api-user
+Enter Jamf Pro API password   : 
 Config file has been written. You can now use this file in other scripts.
  -c /Users/username/Downloads/test.cfg
 ```
@@ -59,6 +58,7 @@ Test a configuration file. This will check that the file has the appropriate key
 #### Usage
 ```console
 $ ./testConfigFile.sh -c ~/Downloads/test.cfg
+Loading config /Users/username/Downloads/test.cfg...
 Config file is valid
 Connection to server https://myserver.jamfcloud.com was successful
 ```
@@ -87,7 +87,8 @@ You can choose to supply an include or exclude file which conatains a list of bu
 
 Get all app names and bundle IDs
 ```console
-$ /usr/bin/curl https://server.jamfcloud.com/JSSResource/mobiledeviceapplications -u jamfadmin | xmllint --format - | grep -E "bundle_id|display_name"
+$ /usr/bin/curl https://server.jamfcloud.com/JSSResource/mobiledeviceapplications --silent -u jssadmin | xmllint --format - | grep -E "bundle_id|display_name"
+Enter host password for user 'jssadmin': 
     <display_name>Classroom</display_name>
     <bundle_id>com.apple.classroom</bundle_id>
     <display_name>Facebook</display_name>
