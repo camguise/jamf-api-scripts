@@ -6,7 +6,7 @@
 ### Created by: Campbell Guise - cam@guise.co.nz
 ### Created: 2019-02-23
 
-COMPANY_NAME="Cyclone" # Used to create api user
+COMPANY_NAME="Cyclone" # Short name of the company (should not contain spaces or symbols)
 
 ## Source External Files ##
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
@@ -59,6 +59,9 @@ if [[ -z "${OUTPUT_FILE}" ]]; then
 	exit 1
 fi
 
+! regexCheck "${COMPANY_NAME}" "^([a-z]|[A-Z]|[0-9]|-)+$" && \
+	echo "Error: COMPANY_NAME must contain only lowercase letters, numbers or a hyphen" >&2 && exit 1
+
 jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
 	"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
 jamfAdminUser=$(getUserInputMatchingRegex "Jamf admin username" "^([a-z]|[0-9]|-)+$" \
@@ -71,13 +74,16 @@ jamfAdminKey=$(echo -n "${jamfAdminUser}:${jamfAdminPassword}" | base64)
 JAMF_AUTH_KEY="${jamfAdminKey}"
 JAMF_URL="${jamfAddress}"
 
-jamfApiUser="${COMPANY_NAME}-api"
+testServerConnection "/JSSResource/accounts"
+
+lowerCompanyName=$(echo "${COMPANY_NAME}" | awk '{print tolower($0)}')
+jamfApiUser="${lowerCompanyName}-api"
 jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
 
 ## Create saved mobile device Search for data export in future
 xmlData="
 <advanced_mobile_device_search>
-  <name>CycloneExport</name>
+  <name>${COMPANY_NAME}Export</name>
   <sort_1/>
   <sort_2/>
   <sort_3/>
@@ -114,19 +120,21 @@ xmlData="
 </advanced_mobile_device_search>
 "
 
-if httpExists "/JSSResource/advancedmobiledevicesearches/name/CycloneExport"; then
-	echo "Updating CycloneExport..."
-	httpPut "/JSSResource/advancedmobiledevicesearches/name/CycloneExport" "${xmlData}"
+if httpExists "/JSSResource/advancedmobiledevicesearches/name/${COMPANY_NAME}Export"; then
+	verbose "Updating ${COMPANY_NAME}Export..."
+	httpPut "/JSSResource/advancedmobiledevicesearches/name/${COMPANY_NAME}Export" "${xmlData}"
 else
-	echo "Adding CycloneExport..."
+	verbose "Adding ${COMPANY_NAME}Export..."
 	httpPost "/JSSResource/advancedmobiledevicesearches" "${xmlData}"
 fi
 
+## Create API user. Passwords can't be set via API so API password will be generated and
+## printed out at the end of this script.
 xmlData="
 <account>
   <name>${jamfApiUser}</name>
   <directory_user>false</directory_user>
-  <full_name>API User</full_name>
+  <full_name>${COMPANY_NAME} API User</full_name>
   <email/>
   <email_address/>
   <enabled>Enabled</enabled>
@@ -147,17 +155,23 @@ xmlData="
 </account>
 "
 
-httpPost "/JSSResource/accounts" "${xmlData}"
+if httpExists "/JSSResource/accounts/username/${jamfApiUser}"; then
+	verbose "Updating ${COMPANY_NAME} API User..."
+	httpPut "/JSSResource/accounts/username/${jamfApiUser}" "${xmlData}"
+else
+	verbose "Adding ${COMPANY_NAME} API User..."
+	httpPost "/JSSResource/accounts" "${xmlData}"
+fi
 
 createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
 apiUserXml=$(httpGet "/JSSResource/accounts/username/${jamfApiUser}")
 apiUserID=$(getXPathValue "/account/id" "${apiUserXml}")
-echo "####################################################################################"
-echo "# You need to go to the Jamf Pro server and set the password for your new API user #"
-echo "# URL: ${JAMF_URL}/accounts.html?id=${apiUserID}&o=u                               #"
-echo "# User: ${jamfApiUser}                                                             #"
-echo "# Password: ${jamfApiPassword}                                                     #"
-echo "# -------------------------------------------------------------------------------- #"
-echo "# You can then test your config file:                                              #"
-echo "# $ ./testConfigFile.sh -c ${OUTPUT_FILE}                                          #"
-echo "####################################################################################"
+echo "############################ SUMMARY #################################"
+echo "You need to go to the Jamf Pro server and set the password for your new API user"
+echo "URL: ${JAMF_URL}/accounts.html?id=${apiUserID}&o=u"
+echo "User: ${jamfApiUser}"
+echo "Password: ${jamfApiPassword}"
+echo "---------------------------------------------------------------------"
+echo "You can then test your config file:"
+echo "$ ./testConfigFile.sh -c ${OUTPUT_FILE}"
+echo "#####################################################################"
