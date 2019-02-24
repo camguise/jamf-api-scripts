@@ -172,7 +172,34 @@ xmlData="
   </criteria>
 </mobile_device_group>
 "
+createUpdateGroup "${xmlData}"
 
+xmlData="
+<mobile_device_group>
+  <name>All Managed iPads (Excluding Staging)</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Model</name>
+      <priority>0</priority>
+      <and_or>AND</and_or>
+      <search_type>like</search_type>
+      <value>iPad</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+    <criterion>
+      <name>Mobile Device Group</name>
+      <priority>1</priority>
+      <and_or>and</and_or>
+      <search_type>not member of</search_type>
+      <value>Pre-Stage Devices</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
 createUpdateGroup "${xmlData}"
 
 ## Create API user. Passwords can't be set via API so API password will be generated and
