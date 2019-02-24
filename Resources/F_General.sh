@@ -183,3 +183,18 @@ arrayContains () {
     done
     return $in
 }
+
+# -------------------------------------
+# Encode a string to a URL friendly format using Perl
+# Globals:
+#   None
+# Arguments:
+#   stringValue - The string to be encoded
+# Returns:
+#   Encoded string
+# -------------------------------------
+function uriEncode () {
+	local stringValue="$1"
+	
+	perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$stringValue"
+}

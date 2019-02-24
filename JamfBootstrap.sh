@@ -129,11 +129,12 @@ else
 fi
 
 ## Create departments
-departments=("StudentShared" "StaffBYOD" "StaffSchoolOwned" "Student1-1" "StudentBYOD")
+departments=("Staff BYOD" "Staff School Owned" "Student 1:1" "Student BYOD" "Student Shared")
 
 for department in "${departments[@]}"; do
+	urlDepartment=$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "${department}")
 	xmlData="<department><name>${department}</name></department>"
-	if ! httpExists "/JSSResource/departments/name/${department}"; then
+	if ! httpExists "/JSSResource/departments/name/${urlDepartment}"; then
 		verbose "Adding ${department}..."
 		httpPost "/JSSResource/departments" "${xmlData}"
 	fi
