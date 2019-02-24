@@ -1,4 +1,4 @@
-### Name: V_JamfConfig.sh
+### Name: F_JamfConfig.sh
 ### Description: Functions which work with the configuration files used by other scripts
 ###   in this project.
 ### Created by: Campbell Guise - cam@guise.co.nz
