@@ -107,6 +107,8 @@ function httpGet () {
 	if [ ${returnCode} -eq 0 ]; then
 		if [[ "${ignoreError}" != "true" ]]; then
 			httpStatusCheck "GET" "${resultStatus}" "${uriPath}" "${resultXML}"
+			echo "${resultXML}"
+			return 0
 		else
 			if [[ "${resultStatus}" == '200' ]]; then
 				echo "${resultXML}"
