@@ -205,6 +205,90 @@ createUpdateGroup "${xmlData}"
 
 xmlData="
 <mobile_device_group>
+  <name>All Managed Apple TVs</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Model</name>
+      <priority>0</priority>
+      <and_or>AND</and_or>
+      <search_type>like</search_type>
+      <value>TV</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+    <criterion>
+      <name>Mobile Device Group</name>
+      <priority>1</priority>
+      <and_or>and</and_or>
+      <search_type>not member of</search_type>
+      <value>Pre-Stage Devices</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
+createUpdateGroup "${xmlData}"
+
+xmlData="
+<mobile_device_group>
+  <name>All Managed iPhones</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Model</name>
+      <priority>0</priority>
+      <and_or>AND</and_or>
+      <search_type>like</search_type>
+      <value>iPhone</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+    <criterion>
+      <name>Mobile Device Group</name>
+      <priority>1</priority>
+      <and_or>and</and_or>
+      <search_type>not member of</search_type>
+      <value>Pre-Stage Devices</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
+createUpdateGroup "${xmlData}"
+
+xmlData="
+<mobile_device_group>
+  <name>All Managed iPod touches</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Model</name>
+      <priority>0</priority>
+      <and_or>AND</and_or>
+      <search_type>like</search_type>
+      <value>iPod touch</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+    <criterion>
+      <name>Mobile Device Group</name>
+      <priority>1</priority>
+      <and_or>and</and_or>
+      <search_type>not member of</search_type>
+      <value>Pre-Stage Devices</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
+createUpdateGroup "${xmlData}"
+
+xmlData="
+<mobile_device_group>
   <name>All Staff Devices</name>
   <is_smart>true</is_smart>
   <criteria>
