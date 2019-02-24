@@ -13,7 +13,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent
 for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
 ### Remove ###
-source ~/Downloads/cycduddev-jssadmin.cfg
+#source ~/Downloads/cycduddev-jssadmin.cfg
 
 ## Command line options/arguments ##
 
@@ -400,6 +400,80 @@ xmlData="
 </mobile_device_group>
 "
 createUpdateGroup "${xmlData}"
+
+## Create configuration profiles
+custName="Cyclone School"
+custPhone="0508 4 ENABLE"
+custEmail="support@cyclone.co.nz"
+
+xmlData='
+<configuration_profile>
+  <general>
+    <name>Lock Screen Message - All Devices</name>
+    <description/>
+    <uuid>512BF1E1-62BD-4739-8F40-078048D9099F</uuid>
+    <deployment_method>Install Automatically</deployment_method>
+    <redeploy_on_update>Newly Assigned</redeploy_on_update>
+    <redeploy_days_before_certificate_expires>0</redeploy_days_before_certificate_expires>
+    <payloads>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1"&gt;&lt;dict&gt;&lt;key&gt;PayloadUUID&lt;/key&gt;&lt;string&gt;512BF1E1-62BD-4739-8F40-078048D9099F&lt;/string&gt;&lt;key&gt;PayloadType&lt;/key&gt;&lt;string&gt;Configuration&lt;/string&gt;&lt;key&gt;PayloadOrganization&lt;/key&gt;&lt;string&gt;Maraetai Beach School&lt;/string&gt;&lt;key&gt;PayloadIdentifier&lt;/key&gt;&lt;string&gt;512BF1E1-62BD-4739-8F40-078048D9099F&lt;/string&gt;&lt;key&gt;PayloadDisplayName&lt;/key&gt;&lt;string&gt;Lock Screen Message - All Devices&lt;/string&gt;&lt;key&gt;PayloadDescription&lt;/key&gt;&lt;string/&gt;&lt;key&gt;PayloadVersion&lt;/key&gt;&lt;integer&gt;1&lt;/integer&gt;&lt;key&gt;PayloadEnabled&lt;/key&gt;&lt;true/&gt;&lt;key&gt;PayloadRemovalDisallowed&lt;/key&gt;&lt;true/&gt;&lt;key&gt;PayloadContent&lt;/key&gt;&lt;array&gt;&lt;dict&gt;&lt;key&gt;PayloadUUID&lt;/key&gt;&lt;string&gt;A562C817-225D-4456-81F7-A3A97E1DF614&lt;/string&gt;&lt;key&gt;PayloadType&lt;/key&gt;&lt;string&gt;com.apple.shareddeviceconfiguration&lt;/string&gt;&lt;key&gt;PayloadOrganization&lt;/key&gt;&lt;string&gt;Maraetai Beach School&lt;/string&gt;&lt;key&gt;PayloadIdentifier&lt;/key&gt;&lt;string&gt;A562C817-225D-4456-81F7-A3A97E1DF614&lt;/string&gt;&lt;key&gt;PayloadDisplayName&lt;/key&gt;&lt;string&gt;com.apple.shareddeviceconfiguration&lt;/string&gt;&lt;key&gt;PayloadDescription&lt;/key&gt;&lt;string/&gt;&lt;key&gt;PayloadVersion&lt;/key&gt;&lt;integer&gt;1&lt;/integer&gt;&lt;key&gt;PayloadEnabled&lt;/key&gt;&lt;true/&gt;&lt;key&gt;IfLostReturnToMessage&lt;/key&gt;&lt;string&gt;If lost please contact '"${custName}"' - P: '"${custPhone}"' E: '"${custEmail}"' - $DEVICENAME&lt;/string&gt;&lt;/dict&gt;&lt;/array&gt;&lt;/dict&gt;&lt;/plist&gt;</payloads>
+  </general>
+  <scope>
+    <all_mobile_devices>false</all_mobile_devices>
+    <all_jss_users>false</all_jss_users>
+    <mobile_devices/>
+    <buildings/>
+    <departments/>
+    <mobile_device_groups>
+      <mobile_device_group>
+        <name>All Managed iPads</name>
+      </mobile_device_group>
+    </mobile_device_groups>
+    <jss_users/>
+    <jss_user_groups/>
+    <limitations>
+      <users/>
+      <user_groups/>
+      <network_segments/>
+      <ibeacons/>
+    </limitations>
+    <exclusions>
+      <mobile_devices/>
+      <buildings/>
+      <departments/>
+      <mobile_device_groups>
+        <mobile_device_group>
+          <name>Pre-Stage Devices</name>
+        </mobile_device_group>
+      </mobile_device_groups>
+      <users/>
+      <user_groups/>
+      <network_segments/>
+      <ibeacons/>
+      <jss_users/>
+      <jss_user_groups/>
+    </exclusions>
+  </scope>
+  <self_service>
+    <self_service_description/>
+    <security>
+      <removal_disallowed>Never</removal_disallowed>
+    </security>
+    <self_service_icon/>
+    <feature_on_main_page>false</feature_on_main_page>
+    <self_service_categories/>
+  </self_service>
+</configuration_profile>
+'
+profileName=$(getXPathValue "/configuration_profile/general/name" "${xmlData}")
+urlProfileName=$(uriEncode "${profileName}")
+
+if ! httpExists "/JSSResource/mobiledeviceconfigurationprofiles/name/${urlProfileName}"; then
+	verbose "Adding profile ${profileName}..."
+	httpPost "/JSSResource/mobiledeviceconfigurationprofiles" "${xmlData}"
+else
+	verbose "Profile ${profileName} already exists"
+fi
 
 ## Create API user. Passwords can't be set via API so API password will be generated and
 ## printed out at the end of this script.
