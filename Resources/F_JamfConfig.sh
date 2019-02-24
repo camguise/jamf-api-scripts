@@ -109,6 +109,15 @@ function testServerConnection () {
 	verbose "Connection to server ${JAMF_URL} was successful"
 }
 
+# -------------------------------------
+# Creates a group if it doesn't exist. Otherwise updates the group to match supplied XML.
+# Globals:
+#   NONE
+# Arguments:
+#   xmlData - XML to define the group parameters
+# Returns:
+#   NONE
+# -------------------------------------
 function createUpdateGroup () {
 	local xmlData="$1"
 	
