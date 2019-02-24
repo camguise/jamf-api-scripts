@@ -22,18 +22,28 @@ function getUserInputMatchingRegex () {
 	local passwordPrompt="$4"
 	
 	if [[ "$passwordPrompt" == 'true' ]]; then
-		passwordPrompt=true
+		local passwordPrompt=true
 	else
-		passwordPrompt=false
+		local passwordPrompt=false
+	fi
+	
+	if [ ! -t 0 ]; then
+		local pipeIn=true
+	else
+		local pipeIn=false
 	fi
 	
 	local returnValue=''
 	while [[ -z $returnValue ]]; do
+		printf "Enter ${requestString} : " >&2
 		if $passwordPrompt; then
-			read -p "Enter ${requestString} : " -s tempValue
+			read -s tempValue
+			echo "" >&2
 		else
-			read -p "Enter ${requestString} : " tempValue
+			read tempValue
+			[ ! -t 0 ] && echo "${tempValue}" >&2
 		fi
+		
 		[[ -z "${tempValue}" ]] && echo "Error: You must specify ${requestString}" >&2 && continue
 		! regexCheck "${tempValue}" "${regexTest}" && echo "Error: ${regexError}" >&2 && continue
 	
