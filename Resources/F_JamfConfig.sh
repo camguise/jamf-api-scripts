@@ -34,10 +34,15 @@ function createConfig () {
 	
 	# Ask the user for input
 	if [[ ! -z "${OUTPUT_FILE}" ]]; then
-		read -p "Enter the Jamf Pro server address : " jamfAddress
-		read -p "Enter your API username           : " jamfApiUser
-		read -p "Enter your API user password      : " -s jamfApiPassword
-		echo -e "\n"
+		printf "Enter the Jamf Pro server address : "
+		read jamfAddress
+		[ ! -t 0 ] && echo "${jamfAddress}"
+		printf "Enter your API username           : "
+		read jamfApiUser
+		[ ! -t 0 ] && echo "${jamfApiUser}"
+		printf "Enter your API user password      : "
+		read -s jamfApiPassword
+		echo ""
 	
 		jamfApiKey=$(echo -n "${jamfApiUser}:${jamfApiPassword}" | base64)
 	
