@@ -240,6 +240,44 @@ xmlData="
 "
 createUpdateGroup "${xmlData}"
 
+xmlData="
+<mobile_device_group>
+  <name>Home Screen Wallpaper</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Mobile Device Group</name>
+      <priority>0</priority>
+      <and_or>AND</and_or>
+      <search_type>member of</search_type>
+      <value>All Managed iPads (Excluding Staging)</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
+createUpdateGroup "${xmlData}"
+
+xmlData="
+<mobile_device_group>
+  <name>Lock Screen Wallpaper</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Mobile Device Group</name>
+      <priority>0</priority>
+      <and_or>AND</and_or>
+      <search_type>member of</search_type>
+      <value>All Managed iPads (Excluding Staging)</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
+createUpdateGroup "${xmlData}"
+
 ## Create API user. Passwords can't be set via API so API password will be generated and
 ## printed out at the end of this script.
 xmlData="
