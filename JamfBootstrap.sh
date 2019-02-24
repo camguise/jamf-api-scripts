@@ -146,6 +146,7 @@ for department in "${departments[@]}"; do
 done
 
 ## Create Groups
+
 xmlData="
 <mobile_device_group>
   <name>Pre-Stage Devices</name>
@@ -176,7 +177,7 @@ createUpdateGroup "${xmlData}"
 
 xmlData="
 <mobile_device_group>
-  <name>All Managed iPads (Excluding Staging)</name>
+  <name>All Managed iPads</name>
   <is_smart>true</is_smart>
   <criteria>
     <criterion>
@@ -250,7 +251,7 @@ xmlData="
       <priority>0</priority>
       <and_or>AND</and_or>
       <search_type>member of</search_type>
-      <value>All Managed iPads (Excluding Staging)</value>
+      <value>All Managed iPads</value>
       <opening_paren>false</opening_paren>
       <closing_paren>false</closing_paren>
     </criterion>
@@ -269,7 +270,7 @@ xmlData="
       <priority>0</priority>
       <and_or>AND</and_or>
       <search_type>member of</search_type>
-      <value>All Managed iPads (Excluding Staging)</value>
+      <value>All Managed iPads</value>
       <opening_paren>false</opening_paren>
       <closing_paren>false</closing_paren>
     </criterion>
