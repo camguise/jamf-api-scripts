@@ -128,6 +128,17 @@ else
 	httpPost "/JSSResource/advancedmobiledevicesearches" "${xmlData}"
 fi
 
+## Create departments
+departments=("StudentShared" "StaffBYOD" "StaffSchoolOwned" "Student1-1" "StudentBYOD")
+
+for department in "${departments[@]}"; do
+	xmlData="<department><name>${department}</name></department>"
+	if ! httpExists "/JSSResource/departments/name/${department}"; then
+		verbose "Adding ${department}..."
+		httpPost "/JSSResource/departments" "${xmlData}"
+	fi
+done
+
 ## Create API user. Passwords can't be set via API so API password will be generated and
 ## printed out at the end of this script.
 xmlData="
