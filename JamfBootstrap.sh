@@ -6,7 +6,7 @@
 ### Created by: Campbell Guise - cam@guise.co.nz
 ### Created: 2019-02-23
 
-COMPANY_NAME="cyclone" # Used to create api user
+COMPANY_NAME="Cyclone" # Used to create api user
 
 ## Source External Files ##
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
@@ -73,6 +73,54 @@ JAMF_URL="${jamfAddress}"
 
 jamfApiUser="${COMPANY_NAME}-api"
 jamfApiPassword=$(openssl rand -base64 32 | tr -cd '[a-zA-Z0-9]._-')
+
+## Create saved mobile device Search for data export in future
+xmlData="
+<advanced_mobile_device_search>
+  <name>CycloneExport</name>
+  <sort_1/>
+  <sort_2/>
+  <sort_3/>
+  <criteria/>
+  <display_fields>
+    <display_field>
+      <name>Display Name</name>
+    </display_field>
+    <display_field>
+      <name>iOS Version</name>
+    </display_field>
+    <display_field>
+      <name>Last Inventory Update</name>
+    </display_field>
+    <display_field>
+      <name>Model</name>
+    </display_field>
+    <display_field>
+      <name>Model Identifier</name>
+    </display_field>
+    <display_field>
+      <name>Serial Number</name>
+    </display_field>
+    <display_field>
+      <name>Wi-Fi MAC Address</name>
+    </display_field>
+    <display_field>
+      <name>Building</name>
+    </display_field>
+    <display_field>
+      <name>Department</name>
+    </display_field>
+  </display_fields>
+</advanced_mobile_device_search>
+"
+
+if httpExists "/JSSResource/advancedmobiledevicesearches/name/CycloneExport"; then
+	echo "Updating CycloneExport..."
+	httpPut "/JSSResource/advancedmobiledevicesearches/name/CycloneExport" "${xmlData}"
+else
+	echo "Adding CycloneExport..."
+	httpPost "/JSSResource/advancedmobiledevicesearches" "${xmlData}"
+fi
 
 xmlData="
 <account>
