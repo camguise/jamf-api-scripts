@@ -108,3 +108,18 @@ function testServerConnection () {
 	# If there are no errors then the script will continue
 	verbose "Connection to server ${JAMF_URL} was successful"
 }
+
+function createUpdateGroup () {
+	local xmlData="$1"
+	
+	local groupName=$(getXPathValue "/mobile_device_group/name" "${xmlData}")
+	local encodedGroupName=$(uriEncode "${groupName}")
+
+	if httpExists "/JSSResource/mobiledevicegroups/name/${encodedGroupName}"; then
+		verbose "Updating group ${groupName}..."
+		httpPut "/JSSResource/mobiledevicegroups/name/${encodedGroupName}" "${xmlData}"
+	else
+		verbose "Adding group ${groupName}..."
+		httpPost "/JSSResource/mobiledevicegroups" "${xmlData}"
+	fi
+}

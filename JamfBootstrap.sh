@@ -128,7 +128,7 @@ else
 	httpPost "/JSSResource/advancedmobiledevicesearches" "${xmlData}"
 fi
 
-## Create departments
+## Create Departments
 departments=("Staff BYOD" "Staff School Owned" "Student 1:1" "Student BYOD" "Student Shared")
 
 for department in "${departments[@]}"; do
@@ -139,6 +139,36 @@ for department in "${departments[@]}"; do
 		httpPost "/JSSResource/departments" "${xmlData}"
 	fi
 done
+
+## Create Groups
+xmlData="
+<mobile_device_group>
+  <name>Pre-Stage Devices</name>
+  <is_smart>true</is_smart>
+  <criteria>
+    <criterion>
+      <name>Building</name>
+      <priority>0</priority>
+      <and_or>and</and_or>
+      <search_type>does not match regex</search_type>
+      <value>.+</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+    <criterion>
+      <name>Department</name>
+      <priority>1</priority>
+      <and_or>or</and_or>
+      <search_type>does not match regex</search_type>
+      <value>.+</value>
+      <opening_paren>false</opening_paren>
+      <closing_paren>false</closing_paren>
+    </criterion>
+  </criteria>
+</mobile_device_group>
+"
+
+createUpdateGroup "${xmlData}"
 
 ## Create API user. Passwords can't be set via API so API password will be generated and
 ## printed out at the end of this script.
