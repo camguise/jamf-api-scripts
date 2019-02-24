@@ -491,6 +491,8 @@ xmlData="
   <privileges>
     <jss_objects>
       <privilege>Read Categories</privilege>
+      <privilege>Read Mobile Device Applications</privilege>
+      <privilege>Update Mobile Device Applications</privilege>
     </jss_objects>
     <jss_settings/>
     <jss_actions/>
