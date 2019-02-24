@@ -1,7 +1,7 @@
 ### Name: V_Globals.sh
 ### Description: Global variables to be used in this project 
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
 
 ## Global Variables ##
 # User custom variables

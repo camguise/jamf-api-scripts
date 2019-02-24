@@ -3,7 +3,7 @@
 ###   the scripts to make simplified function calls. These HTTP requests will not require
 ###   server urls or header values, only the API endpoint paths.
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
 
 # -------------------------------------
 # Checks the result of an API call (via cURL command) for know HTTP error codes. The

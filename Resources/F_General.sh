@@ -1,7 +1,7 @@
 ### Name: F_General.sh
 ### Description: General utility functions which are likely to be useful outside of this project
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
 
 # -------------------------------------
 # Requests user input that must match a given regex

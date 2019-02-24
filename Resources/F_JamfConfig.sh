@@ -2,7 +2,7 @@
 ### Description: Functions which work with the configuration files used by other scripts
 ###   in this project.
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-17
+### Created: 2019-02-17
 
 # -------------------------------------
 # Interactive prompts to allow the user to create a new config file and save to disk.

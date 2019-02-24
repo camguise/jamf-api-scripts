@@ -4,7 +4,7 @@
 ###   the API. This script was created for use within my organisation (Cyclone Computer
 ###   Company Ltd) you may need to modify it for your own environment.
 ### Created by: Campbell Guise - cam@guise.co.nz
-### Updated: 2019-02-23
+### Created: 2019-02-23
 
 COMPANY_NAME="cyclone" # Used to create api user
 
