@@ -196,16 +196,18 @@ arrayContains () {
 #   The index number of the given value or -1 if not found
 # -------------------------------------
 function getArrayIndex () {
-	local theArray="$1"
-	local value="$2"
+	local value="$1"; shift
+	local theArray=("$@")
 
 	for i in "${!theArray[@]}"; do
-	   if [[ "${theArray[$i]}" = "${value}" ]]; then
-		   echo "${i}"
-		   break
-	   fi
+		echo "$i: ${theArray[$i]} = ${value}" >&2
+		if [[ "${theArray[$i]}" = "${value}" ]]; then
+			echo "${i}"
+			return 0
+		fi
 	done
 	echo "-1"
+	return 255
 }
 
 # -------------------------------------
