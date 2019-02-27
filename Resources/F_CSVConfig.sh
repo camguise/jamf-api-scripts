@@ -25,11 +25,15 @@ function validateCSV () {
 		return
 	fi
 	
-	local csvRequiredHeaders=("App Name" "Folder Name" "iTunes URL" "%groups_start%" "%groups_end%")
+	local csvRequiredHeaders=("App Name" "iTunes URL" "%groups_start%" "%groups_end%")
+	local activeAppsHeader="-- Active Apps --"
+	local wishlistHeader="-- Wishlist --"
 	
 	IFS= read -r headerRow < "${csvFile}"
 	
 	IFS=, read -ra headerFields <<<"${headerRow}"
+	headerColsCount="${#headerFields[@]}"
+	
 	for header in "${csvRequiredHeaders[@]}"; do
 		if ! arrayContains "${header}" "${headerFields[@]}"; then
 			err=true
@@ -51,6 +55,56 @@ function validateCSV () {
 		err=true
 		echo "Error: No device groups found in CSV" >&2
 	fi
+	
+	rowTwoColumnOne=$(sed "2q;d" "${csvFile}" | awk -F, '{ print $1 }')
+	
+	if [[ "${rowTwoColumnOne}" != "${activeAppsHeader}" ]]; then
+		err=true
+		echo "Error: No active apps line in row two of the CSV" >&2
+	fi
+	
+	activeApps=()
+	while IFS= read -r line; do
+		activeApps+=( "$line" )
+	done < <( awk "/${activeAppsHeader}/{flag=1; next} /${wishlistHeader}/{flag=0} flag" "${csvFile}" )
+	
+	activeAppsCount="${#activeApps[@]}"
+	
+	if [[ ${activeAppsCount} -lt 1 ]]; then
+		err=true
+		echo "Error: No active apps found in CSV" >&2
+	fi
+	
+	local i=3
+	for app in "${activeApps[@]}"; do
+		IFS=, read -ra appCols <<<"${app}"
+		appColsCount="${#appCols[@]}"
+		
+		appNameIndex=$(getArrayIndex "App Name" "${headerFields[@]}")
+		appName="${appCols[${appNameIndex}]}"
+		
+		if [[ -z "${appName}" ]]; then
+			err=true
+			echo "Error: Row ${i} has no App Name"
+		fi
+		
+		urlIndex=$(getArrayIndex "iTunes URL" "${headerFields[@]}")
+		appUrl="${appCols[${urlIndex}]}"
+		
+		if [[ -z "${appUrl}" ]]; then
+			err=true
+			echo "Error: Row ${i} has no iTunes URL"
+		fi
+		
+		groupStartIndex=$(getArrayIndex "%groups_start%" "${headerFields[@]}" )
+		groupEndIndex=$(getArrayIndex "%groups_end%" "${headerFields[@]}")
+		
+		if [[ ${appColsCount} -ne ${headerColsCount} ]]; then
+			echo "Error: '${appName}' has ${appColsCount} columns when the header row has ${headerColsCount}"
+			err=true
+		fi
+		((i++))
+	done
 	
 	! $err
 }
