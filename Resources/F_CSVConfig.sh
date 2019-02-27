@@ -80,6 +80,12 @@ function validateCSV () {
 		IFS=, read -ra appCols <<<"${app}"
 		appColsCount="${#appCols[@]}"
 		
+		if [[ ${appColsCount} -ne ${headerColsCount} ]]; then
+			echo "Error: Row ${i} has ${appColsCount} columns when the header row has ${headerColsCount}"
+			err=true
+			continue
+		fi
+		
 		appNameIndex=$(getArrayIndex "App Name" "${headerFields[@]}")
 		appName="${appCols[${appNameIndex}]}"
 		
@@ -102,13 +108,18 @@ function validateCSV () {
 			echo "  ${appUrl}"
 		fi
 		
-		groupStartIndex=$(getArrayIndex "%groups_start%" "${headerFields[@]}" )
+		groupStartIndex=$(getArrayIndex "%groups_start%" "${headerFields[@]}")
 		groupEndIndex=$(getArrayIndex "%groups_end%" "${headerFields[@]}")
+		groupIndex=$((groupStartIndex+1))
 		
-		if [[ ${appColsCount} -ne ${headerColsCount} ]]; then
-			echo "Error: '${appName}' has ${appColsCount} columns when the header row has ${headerColsCount}"
-			err=true
-		fi
+		echo "Row: ${i}"
+		echo "  Name: ${appName}"
+		for building in "${buildings[@]}"; do
+			buildingIndex=$(getArrayIndex "${building}" "${headerFields[@]}")
+			buildingValue="${appCols[${buildingIndex}]}"
+			echo "  ${building}: [${buildingValue}]"
+		done
+		
 		((i++))
 	done
 	
