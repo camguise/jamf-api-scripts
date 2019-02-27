@@ -200,7 +200,6 @@ function getArrayIndex () {
 	local theArray=("$@")
 
 	for i in "${!theArray[@]}"; do
-		echo "$i: ${theArray[$i]} = ${value}" >&2
 		if [[ "${theArray[$i]}" = "${value}" ]]; then
 			echo "${i}"
 			return 0
