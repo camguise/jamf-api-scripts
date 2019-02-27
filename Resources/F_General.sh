@@ -163,7 +163,7 @@ confirmNo () {
 
 # -------------------------------------
 # Check if a value exists in an array
-# https://stackoverflow.com/questions/14366390/check-if-an-element-is-present-in-a-bash-array
+# https://stackoverflow.com/a/14367368
 # Globals:
 #   None
 # Arguments:
@@ -182,6 +182,30 @@ arrayContains () {
         fi
     done
     return $in
+}
+
+# -------------------------------------
+# Return the index of a given value in an array
+# https://stackoverflow.com/a/15028821
+# Globals:
+#   None
+# Arguments:
+#   theArray - The array to be searched for value
+#   value    - The value to get an index of
+# Returns:
+#   The index number of the given value or -1 if not found
+# -------------------------------------
+function getArrayIndex () {
+	local theArray="$1"
+	local value="$2"
+
+	for i in "${!theArray[@]}"; do
+	   if [[ "${theArray[$i]}" = "${value}" ]]; then
+		   echo "${i}"
+		   break
+	   fi
+	done
+	echo "-1"
 }
 
 # -------------------------------------
