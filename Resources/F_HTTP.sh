@@ -85,7 +85,7 @@ function httpStatusCheck () {
 #   XML data
 # -------------------------------------
 function httpGet () {
-	local uriPath="$1"
+	local uriPath="${1#/}" # Trim the leading slash if there is one
 	local ignoreError="$2"
 	
 	local returnCode=0
@@ -97,7 +97,7 @@ function httpGet () {
 		--write-out "%{http_code}" \
 		--header "${HEADER_ACCEPT}" \
 		--header "${HEADER_CONTENT_TYPE}" \
-		--url ${JAMF_URL}/${uriPath} \
+		--url "${JAMF_URL}/${uriPath}" \
 		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
 		|| returnCode=$? )
 		
@@ -169,7 +169,7 @@ function httpExists () {
 #   XML data
 # -------------------------------------
 function httpPut () {
-	local uriPath="$1"
+	local uriPath="${1#/}" # Trim the leading slash if there is one
 	local xmlData="$2"
 	
 	local returnCode=0
@@ -180,7 +180,7 @@ function httpPut () {
 		--write-out "%{http_code}" \
 		--header "${HEADER_ACCEPT}" \
 		--header "${HEADER_CONTENT_TYPE}" \
-		--url ${JAMF_URL}/${uriPath} \
+		--url "${JAMF_URL}/${uriPath}" \
 		--data "${xmlData}" \
 		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
 		|| returnCode=$? )
@@ -211,7 +211,7 @@ function httpPut () {
 #   XML data
 # -------------------------------------
 function httpPost () {
-	local uriPath="$1"
+	local uriPath="${1#/}" # Trim the leading slash if there is one
 	local xmlData="$2"
 	
 	local returnCode=0
@@ -222,7 +222,7 @@ function httpPost () {
 		--write-out "%{http_code}" \
 		--header "${HEADER_ACCEPT}" \
 		--header "${HEADER_CONTENT_TYPE}" \
-		--url ${JAMF_URL}/${uriPath} \
+		--url "${JAMF_URL}/${uriPath}" \
 		--data "${xmlData}" \
 		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
 		|| returnCode=$? )
@@ -252,7 +252,7 @@ function httpPost () {
 #   XML data
 # -------------------------------------
 function httpDelete () {
-	local uriPath="$1"
+	local uriPath="${1#/}" # Trim the leading slash if there is one
 	
 	local returnCode=0
 	local result=$( \
@@ -263,7 +263,7 @@ function httpDelete () {
 		--write-out "%{http_code}" \
 		--header "${HEADER_ACCEPT}" \
 		--header "${HEADER_CONTENT_TYPE}" \
-		--url ${JAMF_URL}/${uriPath} \
+		--url "${JAMF_URL}/${uriPath}" \
 		--header "Authorization: Basic ${JAMF_AUTH_KEY}" \
 		|| returnCode=$? )
 		
