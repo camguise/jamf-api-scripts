@@ -13,7 +13,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent
 for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
 ### Remove ###
-#source ~/Downloads/cycduddev-jssadmin.cfg
+source ~/Downloads/cycduddev-jssadmin.cfg
 
 ## Command line options/arguments ##
 
@@ -26,7 +26,7 @@ e.g. $(basename "$0") -v -o ~/Downloads/customer.cfg
 	
 options:
     -h                show this help text
-    -o [file path]    output file for config
+    -o [file path]    output file for config [Optional]
     -C [csv path]     CSV file with apps and distribution groups [Optional]
     -v                verbose output"
 }
@@ -58,13 +58,6 @@ while getopts ":o:C:vh" opt; do
 done
 
 ## MAIN SCRIPT ##
-
-if [[ -z "${OUTPUT_FILE}" ]]; then
-	echo "Error: You must specify an output file (-o)" >&2
-	echo ""
-	helpText
-	exit 1
-fi
 
 ! regexCheck "${COMPANY_NAME}" "^([a-z]|[A-Z]|[0-9]|-)+$" && \
 	echo "Error: COMPANY_NAME must contain only lowercase letters, numbers or a hyphen" >&2 && exit 1
@@ -164,10 +157,10 @@ xmlData="
 "
 urlSearchName=$(uriEncode "${COMPANY_NAME} Export")
 if httpExists "/JSSResource/advancedmobiledevicesearches/name/${urlSearchName}"; then
-	verbose "Updating ${COMPANY_NAME} Export..."
+	verbose "Updating advanced search ${COMPANY_NAME} Export..."
 	httpPut "/JSSResource/advancedmobiledevicesearches/name/${urlSearchName}" "${xmlData}"
 else
-	verbose "Adding ${COMPANY_NAME} Export..."
+	verbose "Adding advanced search ${COMPANY_NAME} Export..."
 	httpPost "/JSSResource/advancedmobiledevicesearches" "${xmlData}"
 fi
 
@@ -512,15 +505,17 @@ else
 	httpPost "/JSSResource/accounts" "${xmlData}"
 fi
 
-createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
-apiUserXml=$(httpGet "/JSSResource/accounts/username/${jamfApiUser}")
-apiUserID=$(getXPathValue "/account/id" "${apiUserXml}")
-echo "############################ SUMMARY #################################"
-echo "You need to go to the Jamf Pro server and set the password for your new API user"
-echo "URL: ${JAMF_URL}/accounts.html?id=${apiUserID}&o=u"
-echo "User: ${jamfApiUser}"
-echo "Password: ${jamfApiPassword}"
-echo "---------------------------------------------------------------------"
-echo "You can then test your config file:"
-echo "$ ./testConfigFile.sh -c ${OUTPUT_FILE}"
-echo "#####################################################################"
+if [[ ! -z "${OUTPUT_FILE}" ]]; then
+	createConfig "${jamfAddress}" "${jamfApiUser}" "${jamfApiPassword}"
+	apiUserXml=$(httpGet "/JSSResource/accounts/username/${jamfApiUser}")
+	apiUserID=$(getXPathValue "/account/id" "${apiUserXml}")
+	echo "############################ SUMMARY #################################"
+	echo "You need to go to the Jamf Pro server and set the password for your new API user"
+	echo "URL: ${JAMF_URL}/accounts.html?id=${apiUserID}&o=u"
+	echo "User: ${jamfApiUser}"
+	echo "Password: ${jamfApiPassword}"
+	echo "---------------------------------------------------------------------"
+	echo "You can then test your config file:"
+	echo "$ ./testConfigFile.sh -c ${OUTPUT_FILE}"
+	echo "#####################################################################"
+fi
