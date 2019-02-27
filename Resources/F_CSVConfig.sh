@@ -96,6 +96,12 @@ function validateCSV () {
 			echo "Error: Row ${i} has no iTunes URL"
 		fi
 		
+		if ! regexCheck "$appUrl" "^https:\/\/itunes.apple.com\/nz\/app\/([a-z]|[0-9]|[-!+])+\/id[0-9]+(\?mt=[0-9])?$"; then
+			err=true
+			echo "Error: Row ${i} has an invalid iTunes URL"
+			echo "  ${appUrl}"
+		fi
+		
 		groupStartIndex=$(getArrayIndex "%groups_start%" "${headerFields[@]}" )
 		groupEndIndex=$(getArrayIndex "%groups_end%" "${headerFields[@]}")
 		
