@@ -3,7 +3,7 @@
 ## USER VARIABLES ##
 # You can choose to set any of the variables below to apply to mobile device apps in bulk.
 # If you don't wish to modify that setting from the existing value in Jamf Pro leave the
-# value blank.
+# value blank. These variables can be overridden by specifying them inside your config file.
 
 # true  = Deploy Automatically
 # false = Self Service
@@ -13,7 +13,7 @@ APP_autoDeploy=""
 APP_availableAfterInstall=""
 
 # Country code for iTunes (two letter country code)
-APP_itunesRegion="NZ"
+APP_itunesRegion=""
 
 # Time of day (in seconds) to sync with iTunes each day to automatically update app description
 # E.g. 2:34pm = 14:34 hrs = 14x60x60 (50,400) + 34x60 (2,040) = 52,440 seconds
