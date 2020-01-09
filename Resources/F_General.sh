@@ -163,7 +163,7 @@ confirmNo () {
 
 # -------------------------------------
 # Check if a value exists in an array
-# https://stackoverflow.com/questions/14366390/check-if-an-element-is-present-in-a-bash-array
+# https://stackoverflow.com/a/14367368
 # Globals:
 #   None
 # Arguments:
@@ -182,4 +182,44 @@ arrayContains () {
         fi
     done
     return $in
+}
+
+# -------------------------------------
+# Return the index of a given value in an array
+# https://stackoverflow.com/a/15028821
+# Globals:
+#   None
+# Arguments:
+#   theArray - The array to be searched for value
+#   value    - The value to get an index of
+# Returns:
+#   The index number of the given value or -1 if not found
+# -------------------------------------
+function getArrayIndex () {
+	local value="$1"; shift
+	local theArray=("$@")
+
+	for i in "${!theArray[@]}"; do
+		if [[ "${theArray[$i]}" = "${value}" ]]; then
+			echo "${i}"
+			return 0
+		fi
+	done
+	echo "-1"
+	return 255
+}
+
+# -------------------------------------
+# Encode a string to a URL friendly format using Perl
+# Globals:
+#   None
+# Arguments:
+#   stringValue - The string to be encoded
+# Returns:
+#   Encoded string
+# -------------------------------------
+function uriEncode () {
+	local stringValue="$1"
+	
+	perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$stringValue"
 }
