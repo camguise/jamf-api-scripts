@@ -119,5 +119,24 @@ Facebook................................ [Exclude]
 | ------------------ |:------:|:--------:|:-------:|:------:|
 | Mobile Device Apps | No     | **Yes**  | **Yes** | No     |
 
+---
+
+### getAppList.sh
+Compiles a CSV formatted list of all mobile device applications from the given Jamf server. The CSV will have columns for Application Name, URL and Total VPP Licenses.
+
+#### Usage
+```console
+$ ./getAppList.sh -c ~/Downloads/test.cfg
+"App Name","iTunes URL","Total VPP Licenses"
+"GarageBand","https://apps.apple.com/nz/app/garageband/id408709785","200"
+"iMovie","https://apps.apple.com/nz/app/imovie/id377298193","200"
+"ScratchJr","https://apps.apple.com/nz/app/scratchjr/id895485086","200"
+```
+#### Jamf Permissions
+##### Jamf Pro Server Objects
+| Item               | Create | Read     | Update | Delete |
+| ------------------ |:------:|:--------:|:------:|:------:|
+| Mobile Device Apps | No     | **Yes**  | No     | No     |
+
 ## License
 This project is licensed under the GNU General Public License v3.0. You may use, distribute and copy it under the license terms.
