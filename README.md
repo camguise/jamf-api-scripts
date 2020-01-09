@@ -53,7 +53,7 @@ No jamf permissions are required to create the config file. The config file will
 ---
 
 ### testConfigFile.sh
-Test a configuration file. This will check that the file has the appropriate keys defined and also if the script can connect to the specified Jamf Pro server via the API. The server test uses the /JSSResource/buildings endpoint so your api user must have access to this endpoint.
+Test a configuration file. This will check that the file has the appropriate keys defined and also if the script can connect to the specified Jamf Pro server via the API. The server test uses the /JSSResource/categories endpoint so your api user must have access to this endpoint.
 
 #### Usage
 ```console
