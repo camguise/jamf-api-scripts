@@ -6,6 +6,11 @@
 ### Created by: Campbell Guise - cam@guise.co.nz
 ### Created: 2019-02-23
 
+# Customer Info
+custName="Cyclone School"
+custPhone="0508 4 ENABLE"
+custEmail="support@cyclone.co.nz"
+
 COMPANY_NAME="Cyclone" # Short name of the company (should not contain spaces or symbols)
 
 ## Source External Files ##
@@ -112,9 +117,13 @@ if [[ ! -z "${csvFile}" ]]; then
 			fi
 		done
 	else
+		echo "Invalid CSV File:" >&2
+		echo "  ${csvFile}" >&2
 		exit 1
 	fi
 fi
+
+exit 0
 
 ## Create saved mobile device Search for data export in future
 xmlData="
@@ -395,9 +404,6 @@ xmlData="
 createUpdateGroup "${xmlData}"
 
 ## Create configuration profiles
-custName="Cyclone School"
-custPhone="0508 4 ENABLE"
-custEmail="support@cyclone.co.nz"
 
 xmlData='
 <configuration_profile>
@@ -434,11 +440,7 @@ xmlData='
       <mobile_devices/>
       <buildings/>
       <departments/>
-      <mobile_device_groups>
-        <mobile_device_group>
-          <name>Pre-Stage Devices</name>
-        </mobile_device_group>
-      </mobile_device_groups>
+      <mobile_device_groups/>
       <users/>
       <user_groups/>
       <network_segments/>
