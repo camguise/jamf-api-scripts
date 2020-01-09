@@ -11,7 +11,7 @@ helpText () {
 	echo "Usage: $(basename "$0") [options] -c /OUTPUT/Path/file.cfg
 	
 -- Test a Jamf Pro API config file before trying to use it with one of the scripts
-e.g. $(basename "$0") -v -o ~/Downloads/customer.cfg
+e.g. $(basename "$0") -v -c ~/Downloads/customer.cfg
 	
 options:
     -h                show this help text
