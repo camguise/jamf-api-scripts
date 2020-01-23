@@ -68,14 +68,14 @@ apps=$(httpGet "/JSSResource/mobiledeviceapplications")
 
 appIDs=( $( getXPathIDsFromPath "/" "${apps}" ))
 
-echo '"App Name","iTunes URL","Total VPP Licenses"'
+echo '"App Name","iTunes URL","Total VPP Licenses"' > "${OUTPUT_FILE}"
 
 for i in ${appIDs[@]}; do
 	appName=$(getXPathValueFromID "/mobile_device_application" "$i" "/name" "${apps}" | iconv -f utf-8 -t ascii//translit)
 	appURL=$(httpGet "/JSSResource/mobiledeviceapplications/id/${i}" | xmllint --format - | grep -e "<itunes_store_url>" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<itunes_store_url>(.*?)<\/itunes_store_url>/sg){print $1}' | awk '{ print "\""$0"\""}')
 	appLicenses=$(httpGet "/JSSResource/mobiledeviceapplications/id/${i}" | xmllint --format - | grep -e "<total_vpp_licenses>" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<total_vpp_licenses>(.*?)<\/total_vpp_licenses>/sg){print $1}' | awk '{ print "\""$0"\""}')
 
-	echo "\"${appName}\",${appURL},${appLicenses}"
+	echo "\"${appName}\",${appURL},${appLicenses}" >> "${OUTPUT_FILE}"
 done
 
 verbose "CSV file has been written ${OUTPUT_FILE}"
