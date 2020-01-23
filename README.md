@@ -126,11 +126,16 @@ Compiles a CSV formatted list of all mobile device applications from the given J
 
 #### Usage
 ```console
-$ ./getAppList.sh -c ~/Downloads/test.cfg
+$ ./getAppList.sh -c ~/Downloads/test.cfg -o ~/Downloads/AppList.csv -v
+Loading config /tmp/cycduddev-jssadmin.cfg...
+Config file is valid
+CSV file has been written to /Users/username/Downloads/AppList.csv
+$ cat ~/Downloads/AppList.csv -v
 "App Name","iTunes URL","Total VPP Licenses"
-"GarageBand","https://apps.apple.com/nz/app/garageband/id408709785","200"
-"iMovie","https://apps.apple.com/nz/app/imovie/id377298193","200"
-"ScratchJr","https://apps.apple.com/nz/app/scratchjr/id895485086","200"
+"Classroom","https://apps.apple.com/nz/app/classroom/id1085319084","20"
+"Facebook","https://apps.apple.com/nz/app/facebook/id284882215","20"
+"Google Chrome","https://apps.apple.com/nz/app/google-chrome/id535886823","20"
+"Swift Playgrounds","https://apps.apple.com/nz/app/swift-playgrounds/id908519492","20"
 ```
 #### Jamf Permissions
 ##### Jamf Pro Server Objects
