@@ -78,4 +78,4 @@ for i in ${appIDs[@]}; do
 	echo "\"${appName}\",${appURL},${appLicenses}" >> "${OUTPUT_FILE}"
 done
 
-verbose "CSV file has been written ${OUTPUT_FILE}"
+verbose "CSV file has been written to ${OUTPUT_FILE}"
