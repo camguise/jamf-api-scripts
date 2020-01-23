@@ -17,7 +17,7 @@ e.g. $(basename "$0") -v -c ~/Downloads/customer.cfg  -o ~/Downloads/AppList.csv
 options:
     -h                show this help text
     -c [file path]    input an existing config file
-    -o [file path]    output file for config
+    -o [file path]    output file for CSV
     -v                verbose output"
 }
 
