@@ -44,3 +44,6 @@ Session.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# bashTester files
+bash_tester
