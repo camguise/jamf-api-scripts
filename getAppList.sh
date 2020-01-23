@@ -8,20 +8,24 @@ for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
 
 # Display help text to describe available command-line options
 helpText () {
-	echo "Usage: $(basename "$0") [options] -c /CONFIG/Path/file.cfg
+	echo "Usage: $(basename "$0") [options] -c /CONFIG/Path/file.cfg -o /OUTPUT/Path/file.csv
 	
 -- Gets a list of all mobile device application names, URLs and license
    counts in a CSV format
-e.g. $(basename "$0") -v -c ~/Downloads/customer.cfg  > ~/Downloads/AppList.csv
+e.g. $(basename "$0") -v -c ~/Downloads/customer.cfg  -o ~/Downloads/AppList.csv
 	
 options:
     -h                show this help text
     -c [file path]    input an existing config file
+    -o [file path]    output file for config
     -v                verbose output"
 }
 
-while getopts ":c:vh" opt; do
+while getopts ":c:o:vh" opt; do
 	case $opt in
+		o)
+			OUTPUT_FILE=$(realPath "$OPTARG")
+			;;
 		c)
 			CONFIG_FILE=$(realPath "$OPTARG")
 			;;
