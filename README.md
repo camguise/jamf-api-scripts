@@ -130,7 +130,7 @@ $ ./getAppList.sh -c ~/Downloads/test.cfg -o ~/Downloads/AppList.csv -v
 Loading config /tmp/cycduddev-jssadmin.cfg...
 Config file is valid
 CSV file has been written to /Users/username/Downloads/AppList.csv
-$ cat ~/Downloads/AppList.csv -v
+$ cat ~/Downloads/AppList.csv
 "App Name","iTunes URL","Total VPP Licenses"
 "Classroom","https://apps.apple.com/nz/app/classroom/id1085319084","20"
 "Facebook","https://apps.apple.com/nz/app/facebook/id284882215","20"
