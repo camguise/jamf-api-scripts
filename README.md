@@ -122,7 +122,7 @@ Facebook................................ [Exclude]
 ---
 
 ### getAppList.sh
-Compiles a CSV formatted list of all mobile device applications from the given Jamf server. The CSV will have columns for Application Name, URL and Total VPP Licenses.
+Compiles a CSV formatted list of all mobile device applications from the given Jamf server. The CSV will have columns for Application Name, URL and Total VPP Licenses. You must specify *BOTH* a valid configuration file and an output file location (including the .csv extension).
 
 #### Usage
 ```console
