@@ -49,6 +49,19 @@ done
 
 ## MAIN SCRIPT ##
 
+if [[ -z "${OUTPUT_FILE}" ]]; then
+	echo "Error: You must specify an output file (-o)" >&2
+	echo ""
+	helpText
+	exit 1
+fi
+
+if [[ -f "${OUTPUT_FILE}" ]]; then
+	echo "The output file you have specified already exists." >&2
+	echo "${OUTPUT_FILE}"
+	! confirmYes "Would you like to overwrite it?" && exit 1
+fi
+
 loadConfig
 
 apps=$(httpGet "/JSSResource/mobiledeviceapplications")
@@ -64,3 +77,5 @@ for i in ${appIDs[@]}; do
 
 	echo "\"${appName}\",${appURL},${appLicenses}"
 done
+
+verbose "CSV file has been written ${OUTPUT_FILE}"
