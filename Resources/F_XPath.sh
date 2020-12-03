@@ -99,6 +99,6 @@ function getXPathIDsFromPath () {
 	local data="$2"
 	
 	validateXML "${data}"
-	echo "${data}" | /usr/bin/xpath "${xPath}" 2> /dev/null \
+	echo "${data}" | /usr/bin/xpath -q -e "${xPath}" \
 	| /usr/bin/perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}'
 }
