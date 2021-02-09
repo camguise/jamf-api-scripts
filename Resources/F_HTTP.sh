@@ -46,7 +46,7 @@ function httpStatusCheck () {
 		echo "The authentication provided is invalid or you do not have permission to the requested resource" >&2
 		exit 1
 	elif [ ${httpCode} -eq 403 ]; then
-		echo "The authentication provided is does not have permission to the requested resource" >&2
+		echo "The authentication provided does not have permission to the requested resource" >&2
 		exit 1
 	elif [ ${httpCode} -eq 404 ]; then
 		echo "The requested resource was not found (404): ${JAMF_URL}/${uriPath}" >&2
