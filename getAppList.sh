@@ -51,7 +51,7 @@ apps=$(httpGet "/JSSResource/mobiledeviceapplications")
 
 appIDs=( $( getXPathIDsFromPath "/" "${apps}" ))
 
-echo '"App Name","iTunes URL","Total VPP Licenses","Bundle ID","Distribution Method"'
+echo '"App Name","iTunes URL","Total VPP Licenses","Bundle ID","Distribution Method","Version"'
 
 for i in ${appIDs[@]}; do
 
@@ -66,6 +66,7 @@ for i in ${appIDs[@]}; do
 	appLicenses=$(echo "${appXML}" | grep -e "<total_vpp_licenses>" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<total_vpp_licenses>(.*?)<\/total_vpp_licenses>/sg){print $1}' | awk '{ print "\""$0"\""}')
 	bundleID=$(echo "${appXML}" | grep -e "<bundle_id>" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<bundle_id>(.*?)<\/bundle_id>/sg){print $1}' | awk '{ print "\""$0"\""}')
 	distributionMethod=$(echo "${appXML}" | grep -e "<deployment_type>" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<deployment_type>(.*?)<\/deployment_type>/sg){print $1}' | awk '{ print "\""$0"\""}')
+	version=$(echo "${appXML}" | grep -e "<version>" | /usr/bin/perl -lne 'BEGIN{undef $/} while (/<version>(.*?)<\/version>/sg){print $1}' | awk '{ print "\""$0"\""}')
 	
-	echo "\"${appName}\",${appURL},${appLicenses},${bundleID},${distributionMethod}"
+	echo "\"${appName}\",${appURL},${appLicenses},${bundleID},${distributionMethod},${version}"
 done
