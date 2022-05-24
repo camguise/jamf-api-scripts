@@ -40,7 +40,7 @@ function createConfig () {
 		[ ! -z "${jamfAddress}" ] || jamfAddress=$(getUserInputMatchingRegex "Jamf Pro server address" \
 	"${JAMF_URL_REGEX}" "You must specify a valid server URL, including 'https://'")
 
-		[ ! -z "${jamfApiUser}" ] || jamfApiUser=$(getUserInputMatchingRegex "Jamf Pro API username  " "^([a-z]|[0-9]|-)+$" \
+		[ ! -z "${jamfApiUser}" ] || jamfApiUser=$(getUserInputMatchingRegex "Jamf Pro API username  " "^([a-z]|\.|[0-9]|-)+$" \
 	"Username must contain only lowercase letters, numbers or a hyphen")
 		[ ! -z "${jamfApiPassword}" ] || jamfApiPassword=$(getUserInputMatchingRegex "Jamf Pro API password  " "${REGEX_ANY}" "" true)
 	
