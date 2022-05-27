@@ -138,5 +138,51 @@ $ ./getAppList.sh -c ~/Downloads/test.cfg
 | ------------------ |:------:|:--------:|:------:|:------:|
 | Mobile Device Apps | No     | **Yes**  | No     | No     |
 
+---
+
+### inventoryCheck.sh
+
+Given a csv file containing inventory where each row starts with a device serial number, this script will produce output which you you may redirect to a 
+new CSV. Every row will end in either 'found' or 'not found' depending on whether the provided serial is JAMF managed.
+
+**At the current time, this only supports Computer serial numbers**
+
+#### Input: Inventory file format
+
+You should provide a file without headers, starting with the serial number
+
+```
+CZX2F2RAF3N5,Josette Blogs, INTERNAL_ID_1, ANY_OTHERFIELDS
+CZX2F2J883N5,Jay Blogs, INTERNAL_ID_3, ANY_OTHERFIELDS
+
+```
+
+#### Outout: Inventory check file output
+
+Given every row will end in either 'found' or 'not found' depending on whether the serial is present in JAMF. It is advised to direct this into a new file.
+
+eg.
+```
+CZX2F2RAF3N5,Josette Blogs, INTERNAL_ID_1, ANY_OTHERFIELDS,found
+CZX2F2J883N5,Jay Blogs, INTERNAL_ID_3, ANY_OTHERFIELDS,not found
+```
+
+#### Usage
+
+Given a csv file structure with the serial number in the first column, this will report all serial numbers and indicate whether or not they are currently managed 
+**Computers** in your JAMF instance.
+
+```
+$ ./inventoryCheck.sh -c ./test.cfg -i ./inventoryfile.csv > inventory-check.csv
+```
+
+#### Jamf Permissions
+##### Jamf Pro Server Objects
+| Item               | Create | Read     | Update  | Delete |
+| ------------------ |:------:|:--------:|:-------:|:------:|
+| Computers          | No     | **Yes**  |    No   |   No   |
+
+
+
 ## License
 This project is licensed under the GNU General Public License v3.0. You may use, distribute and copy it under the license terms.
