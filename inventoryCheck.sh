@@ -1,15 +1,86 @@
 #!/usr/bin/env bash
-JAMF_USER=$1
-SEARCH_FIELD='.computer.general.serial_number'
+INVENTORY_FILE=$1
+CURL=`which curl`
+IFS=$'\n'
+SERIAL_GET_PATH=/JSSResource/computers/serialnumber/
 
-if [[ -z "$JAMF_PASSWORD" ]]; then \
-    echo "you need to: export JAMF_PASSWORD=<your Jamf password>"
+## Source External Files ##
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # parent folder of script
+for resource in "${DIR}"/Resources/*.sh; do source "${resource}"; done
+
+## Check Curl is on Path
+if [[ -z "$CURL" ]]; then
+    echo "curl should be on your path"
     exit 1
 fi
+
+#if [[ -z "$JAMF_USER" ]]; then \
+#    echo "you need to: export JAMF_USER=<your Jamf user>"
+#    exit 1
+#fi
+#
+#if [[ -z "$JAMF_PASSWORD" ]]; then \
+#    echo "you need to: export JAMF_PASSWORD=<your Jamf password>"
+#    exit 1
+#fi
 JAMF_CREDS="$JAMF_USER:$JAMF_PASSWORD"
-COMPUTERS_IDFILE=/tmp/computers.$$.json
-SERIALS_FILE=/tmp/serials.$$.json
-/usr/bin/curl --silent --max-time 30 --request GET --write-out '%{http_code}' --header 'Accept: application/json' --header 'Content-Type: application/json' --url https://devins01.jamfcloud.com/JSSResource/computers/subset/basic -u $JAMF_CREDS | jq .computers[].id > $COMPUTERS_IDFILE
-for COMPUTER_ID in `cat $COMPUTERS_IDFILE`; do \
-   /usr/bin/curl --silent --max-time 30 --request GET --write-out '%{http_code}' --header 'Accept: application/json' --header 'Content-Type: application/json' --url https://devins01.jamfcloud.com/JSSResource/computers/id/$COMPUTER_ID  -u"$JAMF_CREDS" | jq $SEARCH_FIELD | sed -e's/"//g' >> $SERIALS_FILE
+
+
+## Command line options/arguments ##
+
+# Display help text to describe available command-line options
+helpText () {
+	echo "Usage: $(basename "$0") [options] -c /OUTPUT/Path/file.cfg -i inventory.csv
+
+-- Given a CSV with serial, query Jamf Pro API and produce a CSV which indicates which serials are JAMF managed.
+e.g. $(basename "$0") -v -c ~/Downloads/customer.cfg -i /path/to/inventory.csv
+
+options:
+    -h                      show this help text
+    -c [file path]          input an existing config file
+    -i [inventory csv path] a csv file where each row starts with a serial 
+    -v                verbose output"
+}
+
+while getopts "i:c:vh" opt; do
+	case $opt in
+		c)
+			CONFIG_FILE=$(realPath "$OPTARG")
+			;;
+		i)
+			INVENTORY_FILE=$(realPath "$OPTARG")
+			;;
+		v)
+			VERBOSE=true
+			;;
+		h)
+			helpText
+			exit 0
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+		:)
+			echo "Option -$OPTARG requires an argument." >&2
+			exit 1
+			;;
+	esac
+done
+
+## Load config
+loadConfig
+
+# Loop rows of inventory file, pull out serial and check in JAMF
+for INVENTORY_ROW in `cat $INVENTORY_FILE`; do
+    SERIAL=`echo $INVENTORY_ROW | cut -d, -f1 | sed -e 's/\s+//'`
+    if [[ ! -z "$SERIAL" ]]; then
+        if httpExists "${SERIAL_GET_PATH}/$SERIAL"; then
+           echo "$INVENTORY_ROW,found"
+        else
+            echo "$INVENTORY_ROW,not found"
+        fi
+    fi
+    #$CURL --silent --max-time 30 --request GET --write-out '%{http_code}' --header 'Accept: application/json' --header 'Content-Type: application/json' --url https://devins01.jamfcloud.com/${SERIAL_GET_PATH}/$SERIAL -u $JAMF_CREDS |jq . 2>&1 >/dev/null
+    #if [[ "$?" -ne 0 ]];then echo  else echo "$INVENTORY_ROW,found"; fi;
 done;
