@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-INVENTORY_FILE=$1
 CURL=`which curl`
 IFS=$'\n'
 SERIAL_GET_PATH=/JSSResource/computers/serialnumber/
