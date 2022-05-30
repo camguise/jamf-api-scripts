@@ -14,18 +14,6 @@ if [[ -z "$CURL" ]]; then
     exit 1
 fi
 
-#if [[ -z "$JAMF_USER" ]]; then \
-#    echo "you need to: export JAMF_USER=<your Jamf user>"
-#    exit 1
-#fi
-#
-#if [[ -z "$JAMF_PASSWORD" ]]; then \
-#    echo "you need to: export JAMF_PASSWORD=<your Jamf password>"
-#    exit 1
-#fi
-JAMF_CREDS="$JAMF_USER:$JAMF_PASSWORD"
-
-
 ## Command line options/arguments ##
 
 # Display help text to describe available command-line options
@@ -81,6 +69,4 @@ for INVENTORY_ROW in `cat $INVENTORY_FILE`; do
             echo "$INVENTORY_ROW,not found"
         fi
     fi
-    #$CURL --silent --max-time 30 --request GET --write-out '%{http_code}' --header 'Accept: application/json' --header 'Content-Type: application/json' --url https://devins01.jamfcloud.com/${SERIAL_GET_PATH}/$SERIAL -u $JAMF_CREDS |jq . 2>&1 >/dev/null
-    #if [[ "$?" -ne 0 ]];then echo  else echo "$INVENTORY_ROW,found"; fi;
 done;
